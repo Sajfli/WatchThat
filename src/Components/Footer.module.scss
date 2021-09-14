@@ -1,0 +1,11 @@
+$footer-height: 30px;
+$shade-color: #2b2b86;
+
+.Footer {
+    width: 100%;
+    height: $footer-height;
+    background-color: rgba($shade-color, .05);
+
+    text-align: center;
+    line-height: $footer-height;
+}

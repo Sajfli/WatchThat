@@ -38,7 +38,6 @@ const Player = ({video={}}) => {
         if(target.tagName && (target.tagName === 'VIDEO' || datasetCond)){
             setPlaying(!playing)
 
-            // debugger
             if(playCircleRef.current) {
                 playCircleRef.current.style.display = 'block'
                 setTimeout(() => {
@@ -57,7 +56,6 @@ const Player = ({video={}}) => {
     }
 
     const handleProgress = _progress => {
-        // console.log(_progress.played*100)
         setProgress(_progress.played*100)
     }
 
@@ -110,7 +108,7 @@ const Player = ({video={}}) => {
                     <div className={style.controls}>
 
                         <div className={style.leftCorner}>
-                            <div className={classnames(style.pauseBtn, style.controlComponent, style.btn)} data-pauseonclick='true'>
+                            <div className={classnames(style.controlComponent, style.btn)} data-pauseonclick='true'>
                                 <FontAwesomeIcon icon={playing ? faPause : faPlay} data-pauseonclick='true'/>
                             </div>
                         </div>

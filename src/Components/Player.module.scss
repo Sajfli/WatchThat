@@ -2,9 +2,6 @@
 
     --player-width: 800px;
 
-    // width: calc(16 / 9 * 500px);
-    // height: 500px;
-
     width: var(--player-width);
     height: calc(9 / 16 * var(--player-width));
 
@@ -32,7 +29,7 @@
     display: block;
 }
 
-.mouseNotMoving .controls, .mouseNotMoving .title {
+.mouseNotMoving .controls:not(:hover), .mouseNotMoving .title {
     display: none !important;
 }
 
@@ -97,11 +94,6 @@
     color: #fff;
 }
 
-.progressBar, .progressBar .watched {
-    // position: absolute;
-    // bottom: 0; left: 0;
-}
-
 .progressBar {
     // background-color: red;
     position: relative;
@@ -126,16 +118,12 @@
 
 .progressBarLayer {
     background-color: #cccccc46;
-    // transform: translateY(50%);
 }
 
 .progressBar .watched {
     background-color: #e9e9e9;
     transform: scaleX(0);
     transform-origin: top left;
-}
-
-.pauseBtn {
 }
 
 .volume {
@@ -177,9 +165,6 @@
     border-radius: 5px;
 }
 
-.fullScreen {
-}
-
 @keyframes play {
     from {
         transform: translate(-50%, -50%) scale(.5);
@@ -198,7 +183,6 @@
     transform: translate(-50%, -50%) scale(.8);
     font-size: 100px;
     color: #0000008c;
-    // color: #f8f8f857;
     z-index: 100;
 
     animation-name: play;

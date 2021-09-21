@@ -1,6 +1,206 @@
+.playerContainer {
+
+    --player-width: 800px;
+
+    // width: calc(16 / 9 * 500px);
+    // height: 500px;
+
+    width: var(--player-width);
+    height: calc(9 / 16 * var(--player-width));
+
+    position: relative;
+}
+
 .Player {
-    width: calc(16 / 9 * 300px);
-    height: 300px;
+    width: 100%; height: 100%;
+    top: 0; left: 0;
 
     background-color: #000;
+
+    position: absolute;
+}
+
+.Player.mouseNotMoving {
+    cursor: none;
+}
+
+.Player:hover .controls {
+    display: flex;
+}
+
+.Player:hover .title {
+    display: block;
+}
+
+.mouseNotMoving .controls, .mouseNotMoving .title {
+    display: none !important;
+}
+
+.title {
+    position: absolute;
+    top: 0; left: 0;
+    min-height: 50px;
+    width: 100%;
+    line-height: 30px;
+    font-size: 18px;
+    padding: 10px 40px;
+
+    background: linear-gradient(#000000a9, transparent);
+
+    display: none;
+}
+
+.controls {
+    display: none;
+    // display: flex;
+
+    position: absolute;
+    bottom: 0; left: 0;
+
+    height: 50px; width: 100%;
+
+    padding: 10px;
+
+    justify-content: space-between;
+    align-items: center;
+
+    background: linear-gradient(#0000, #000000a9);
+}
+
+.leftCorner {
+    flex: 1;
+}
+
+.rightCorner {
+    flex: 2;
+}
+
+.leftCorner, .rightCorner {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.controlComponent {
+    width: 30px; height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.controlComponent.btn {
+    color: #ccc;
+    cursor: pointer;
+}
+
+.controlComponent.btn:hover {
+    color: #fff;
+}
+
+.progressBar, .progressBar .watched {
+    // position: absolute;
+    // bottom: 0; left: 0;
+}
+
+.progressBar {
+    // background-color: red;
+    position: relative;
+    height: 10px;
+
+    flex: 5;
+
+    transform: scaleY(.5);
+    transition: transform linear .05s;
+    cursor: pointer;
+}
+
+.progressBar:hover {
+    transform: scaleY(1);
+}
+
+.progressBarLayer, .progressBar .watched {
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+}
+
+.progressBarLayer {
+    background-color: #cccccc46;
+    // transform: translateY(50%);
+}
+
+.progressBar .watched {
+    background-color: #e9e9e9;
+    transform: scaleX(0);
+    transform-origin: top left;
+}
+
+.pauseBtn {
+}
+
+.volume {
+    position: relative;
+}
+
+.volume:hover .volumeBarBox {
+    display: flex;
+}
+
+.volumeBarBox {
+
+    display: none;
+
+    transition: display .2s linear .2s;
+
+    position: absolute;
+    bottom: 0;
+
+    padding-bottom: 35px;
+    width: 35px;
+    height: 135px;
+
+    left: -2.5px;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.volumeBarBox::before {
+    content: ''; top: 0; left: 0;
+    width: 100%; height: 100px;
+
+    position: absolute;
+
+    background-color: #6363637e;
+    border-radius: 5px;
+}
+
+.fullScreen {
+}
+
+@keyframes play {
+    from {
+        transform: translate(-50%, -50%) scale(.5);
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.playCircle {
+
+    display: none;
+
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(.8);
+    font-size: 100px;
+    color: #0000008c;
+    // color: #f8f8f857;
+    z-index: 100;
+
+    animation-name: play;
+    animation-timing-function: ease-in-out;
+    animation-duration: .2s;
+    animation-fill-mode: forwards;
 }

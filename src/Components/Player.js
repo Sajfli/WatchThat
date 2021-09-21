@@ -170,19 +170,23 @@ const Player = ({video={}}) => {
 
                         <div className={style.rightCorner}>
 
-                            <div className={classnames(style.volume, style.controlComponent, style.btn)}>
+                            <div
+                                className={classnames(style.volume, style.controlComponent, style.btn)}
+                            >
 
-                                <FontAwesomeIcon
+                                    <FontAwesomeIcon
 
-                                    icon={
-                                        (muted || volume === 0) ? faVolumeMute
-                                        : (volume < 20) ? faVolumeOff
-                                        : (volume < 50) ? faVolumeDown
-                                        : faVolumeUp
-                                    }
-                                    onClick={() => setMuted(!muted)}
-                                />
+                                        icon={
+                                            (muted || volume === 0) ? faVolumeMute
+                                            : (volume < 20) ? faVolumeOff
+                                            : (volume < 50) ? faVolumeDown
+                                            : faVolumeUp
+                                        }
 
+                                        style={{position: 'relative', zIndex: 2}}
+
+                                        onClick={() => setMuted(!muted)}
+                                    />
 
 
                                 <div className={style.volumeBarBox}>

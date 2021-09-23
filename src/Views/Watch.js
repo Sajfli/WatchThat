@@ -1,14 +1,12 @@
 import { useState } from 'react'
+import ky from 'ky'
+import isURL from 'validator/lib/isURL'
 
 import Player from 'Components/Player'
 import { TextInput } from 'Components/Inputs'
 
-import isURL from 'validator/lib/isURL'
-
 import style from './Watch.module.scss'
 
-
-import ky from 'ky'
 
 const Watch = () => {
 
@@ -31,6 +29,7 @@ const Watch = () => {
                 let _video = {}
 
                 _video.url = Array.isArray(res.url) ? res.url : [res.url]
+                _video.indirect = res.indirect ? true : false
 
                 if(res.title) _video.title = res.title
 

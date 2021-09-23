@@ -23,8 +23,14 @@
     top: 0; left: 0;
 
     background-color: #000;
-
     position: absolute;
+}
+
+.ReactPlayer {
+    z-index: 1;
+    width: 100%; height: 100%;
+    top: 0; left: 0;
+    // pointer-events: none;
 }
 
 .Player.mouseNotMoving {
@@ -72,6 +78,8 @@
     align-items: center;
 
     background: linear-gradient(#0000, #000000a9);
+
+    z-index: 9999;
 }
 
 .leftCorner {

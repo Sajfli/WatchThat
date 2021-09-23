@@ -57,6 +57,8 @@ const Player = ({video={}}) => {
 
     const handleProgress = _progress => {
         setProgress(_progress.played*100)
+
+        sendChange('progress', _progress)
     }
 
     const handleMouseMove = () => {
@@ -67,20 +69,18 @@ const Player = ({video={}}) => {
         timer.current = setTimeout(() => setMouseMoving(false), 1500)
     }
 
+    const sendChange = (action, value) => {
+        console.log(action, value)
+    }
+
     const
         url = video.url || [],
-        title = video.title || null
-
-    // const urls = []
-    // url.forEach(u => urls.push(u))
+        title = video.title || null,
+        indirect = video.indirect || false
 
     return(
         <div
             className={classnames(style.playerContainer, expanded ? style.expanded : null)}
-            // className={style.playerContainer}
-            // style={expanded ? {
-            //     '--player-width': window.innerWidth + 'px'
-            // } : null}
         >
             <FullScreen
                 handle={handleFullScreen}
@@ -91,22 +91,35 @@ const Player = ({video={}}) => {
                     onMouseMove={handleMouseMove}
                 >
 
-                    {
-                        (url && url.length > 0) &&
-                        <ReactPlayer
-                            url={
-                                `/api/v1/video/stream/?url=${encodeURIComponent(url[0])}${url[1] ? `&audio=${encodeURIComponent(url[1])}` : ''}`
-                            }
-                            width={'100%'}
-                            height={'100%'}
+                    <div className={style.ReactPlayer}>
+                        {
+                            (url && url.length > 0) &&
+                            <ReactPlayer
+                                url={
+                                    indirect
+                                    ? url[0]
+                                    : `/api/v1/video/stream?url=${encodeURIComponent(url[0])}`
+                                }
+                                width={'100%'}
+                                height={'100%'}
 
-                            playing={playing}
-                            volume={muted ? 0 : volume/100}
+                                playing={playing}
+                                volume={muted ? 0 : volume/100}
 
-                            onProgress={handleProgress}
-                            ref={playerRef}
-                        />
-                    }
+                                onProgress={handleProgress}
+                                ref={playerRef}
+
+                                onPause={() => sendChange('paused')}
+
+                                config={{
+                                    youtube: { playerVars: {
+                                        controls: 1
+                                    }
+                                }
+                                }}
+                            />
+                        }
+                    </div>
 
 
                     { title && <div className={style.title}>{title}</div> }
@@ -115,7 +128,9 @@ const Player = ({video={}}) => {
                         <FontAwesomeIcon icon={playing ? faPlayCircle : faPauseCircle} />
                     </div>
 
-                    <div className={style.controls}>
+                    {
+                        !indirect && (
+                            <div className={style.controls}>
 
                         <div className={style.leftCorner}>
                             <div className={classnames(style.controlComponent, style.btn)} data-pauseonclick='true'>
@@ -278,6 +293,10 @@ const Player = ({video={}}) => {
                         </div>
 
                     </div>
+                        )
+                    }
+
+
 
                 </div>
             </FullScreen>

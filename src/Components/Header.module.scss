@@ -1,24 +1,35 @@
-$header-height: 40px;
-$shade-color: #2b2b86;
-// $shade-color: rgb(209, 78, 27);
-
-$accent-color: #c70f81;
+@import 'utils/master';
 
 .Header {
 
-    background-color: rgba($shade-color, .5);
+    // background-color: rgba($shade-color, .5);
+    // background: linear-gradient(rgba($shade-color, .5) 80%, transparent);
 
     height: $header-height;
 
-    padding: 0 20px;
+    padding: 20px 40px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    position: relative;
+}
+
+.Header::before {
+    content: ''; position: absolute;
+    top: 0; left: 0;
+    height: $header-height + 40px;
+    width: 100%;
+
+    z-index: -1;
+
+    // background-color: red;
+    background: linear-gradient(rgba($shade-color, 1), transparent);
 }
 
 .logo {
-    font-size: 18px;
+    font-size: 24px;
     height: $header-height;
     font-weight: 700;
 }

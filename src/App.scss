@@ -1,5 +1,4 @@
-$header-height: 64px;
-$footer-height: 30px;
+@import 'utils/master';
 
 body {
     background-color: #252525;
@@ -16,6 +15,9 @@ body {
     justify-content: center;
     align-items: center;
 
-    min-height: calc(100vh - #{$header-height} - #{$footer-height});
+    padding-left: $sidebar-width;
+
+    min-height: calc(100vh - #{$footer-height});
+    // min-height: calc(100vh - #{$header-height} - #{$footer-height});
 
 }

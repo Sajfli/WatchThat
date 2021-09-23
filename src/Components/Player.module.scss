@@ -1,3 +1,5 @@
+@import 'utils/master';
+
 .playerContainer {
 
     --player-width: 800px;
@@ -5,7 +7,15 @@
     width: var(--player-width);
     height: calc(9 / 16 * var(--player-width));
 
+    background-color: #000;
+
+    max-height: 80vh !important;
+
     position: relative;
+}
+
+.playerContainer.expanded {
+    --player-width: calc(100vw - #{$sidebar-width});
 }
 
 .Player {

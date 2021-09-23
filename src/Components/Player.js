@@ -68,15 +68,19 @@ const Player = ({video={}}) => {
     }
 
     const
-        url = video.url || null,
+        url = video.url || [],
         title = video.title || null
+
+    // const urls = []
+    // url.forEach(u => urls.push(u))
 
     return(
         <div
-            className={style.playerContainer}
-            style={expanded ? {
-                '--player-width': window.innerWidth + 'px'
-            } : null}
+            className={classnames(style.playerContainer, expanded ? style.expanded : null)}
+            // className={style.playerContainer}
+            // style={expanded ? {
+            //     '--player-width': window.innerWidth + 'px'
+            // } : null}
         >
             <FullScreen
                 handle={handleFullScreen}
@@ -87,17 +91,23 @@ const Player = ({video={}}) => {
                     onMouseMove={handleMouseMove}
                 >
 
-                    <ReactPlayer
-                        url={url && `/api/v1/video/stream/?url=${url}`}
-                        width={'100%'}
-                        height={'100%'}
+                    {
+                        (url && url.length > 0) &&
+                        <ReactPlayer
+                            url={
+                                `/api/v1/video/stream/?url=${encodeURIComponent(url[0])}${url[1] ? `&audio=${encodeURIComponent(url[1])}` : ''}`
+                            }
+                            width={'100%'}
+                            height={'100%'}
 
-                        playing={playing}
-                        volume={muted ? 0 : volume/100}
+                            playing={playing}
+                            volume={muted ? 0 : volume/100}
 
-                        onProgress={handleProgress}
-                        ref={playerRef}
-                    />
+                            onProgress={handleProgress}
+                            ref={playerRef}
+                        />
+                    }
+
 
                     { title && <div className={style.title}>{title}</div> }
 

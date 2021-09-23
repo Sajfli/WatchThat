@@ -1,5 +1,6 @@
-import Header from './Components/Header'
+// import Header from './Components/Header'
 // import Footer from './Components/Footer'
+import SideBar from 'Components/SideBar';
 
 import Router from './Routing/Router'
 
@@ -14,7 +15,9 @@ function App() {
 
       <BrowserRouter>
 
-        <Header />
+        {/* <Header /> */}
+
+        <SideBar />
 
         <Router />
 

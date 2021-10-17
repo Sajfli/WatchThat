@@ -1,0 +1,16 @@
+{
+    "typeVideoUrl": "Type video URL",
+
+    "signInTitle": "Sign In to your account",
+    "signUnTitle": "Create your account",
+    "forgottenPassword": "Forgotten password?",
+    "newUser": "New user? Sign up!",
+    "existingUser": "Already have account? Sign in!",
+
+    "inputEmail": "Email address",
+    "inputUsername": "Username",
+    "inputPassword": "Password",
+
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+}

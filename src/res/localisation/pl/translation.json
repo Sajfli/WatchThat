@@ -1,0 +1,16 @@
+{
+    "typeVideoUrl": "Podaj adres filmu",
+
+    "signInTitle": "Zaloguj się do swojego konta",
+    "signUnTitle": "Stwórz nowe konto",
+    "forgottenPassword": "Zresetuj hasło",
+    "newUser": "Jesteś now*? Zarejestruj się!",
+    "existingUser": "Masz już konto? Zaloguj się!",
+
+    "inputEmail": "Adres email",
+    "inputUsername": "Nazwa użytkownika",
+    "inputPassword": "Hasło",
+
+    "signIn": "Zaloguj się",
+    "signUp": "Zarejestruj się"
+}

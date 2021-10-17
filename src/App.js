@@ -1,40 +1,47 @@
-import { useState } from 'react';
-import SideBar from 'Components/SideBar';
-import AuthComponent from 'Components/Auth'
-
-import Router from './Routing/Router'
-
+import React, { useState, Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom'
 
-import UserAuthManager from './Services/UserAuthManager'
-import AuthContext from 'context/AuthContext';
+// UI components
+import SideBar from 'Components/SideBar';
 
+// logic
+import Router from './routing/Router'
+
+// context
+import AuthContext from 'context/Auth';
+import LangContext from 'context/Lang'
+
+// others
+import UserAuthManager from './services/UserAuthManager'
+import LangManager from './services/LangManager'
+
+// style
 import './App.scss'
 
+// can be lazy
+const AuthComponent = React.lazy(() => import('Components/Auth'))
 
-const UserAuth = new UserAuthManager()
+// ######
+
+const authManager = new UserAuthManager()
+const langManager = new LangManager()
 
 function App() {
 
+  // should Auth Component popup be rendered
   const [ authPopup, setAuthPopup ] = useState(false)
 
-  const [ isSignedIn, setIsSignedIn ] = useState(UserAuth.isSignedIn())
+  // is Signed In, initially taken from UserAuth
+  const [ isSignedIn, setIsSignedIn ] = useState(authManager.isSignedIn())
 
-  const signIn = ({username, token}, cb) => {
-    UserAuth.putIntoLocalStorage({username, token})
+  const [ lang, setLang ] = useState(langManager.getLang())
 
-    if(UserAuth.isSignedIn()) {
-      setIsSignedIn(true)
-      if(cb) cb()
-    }
+  // handle sign in and sign out in AuthContext
+  const signIn = authManager.signIn(setIsSignedIn)
+  const signOut = authManager.signOut(setIsSignedIn)
 
-    else setIsSignedIn(false)
-  }
-
-  const signOut = () => {
-    UserAuth.signOut()
-    setIsSignedIn(false)
-  }
+  // handle language change
+  const changeLang = langManager.handleLangChange(setLang)
 
 
 
@@ -42,18 +49,24 @@ function App() {
     <div className="App">
 
       <AuthContext.Provider value={{isSignedIn, signIn, signOut}}>
+      <LangContext.Provider value={{lang: lang, changeLang}}>
+
         <BrowserRouter>
 
           <SideBar authPopupCallback={() => setAuthPopup(true)} />
 
           {
             authPopup &&
-              <AuthComponent authPopupCallback={() => setAuthPopup(false)} />
+              <Suspense fallback={<div>Loading...</div>}>
+                <AuthComponent authPopupCallback={() => setAuthPopup(false)} />
+              </Suspense>
           }
 
           <Router />
 
         </BrowserRouter>
+
+      </LangContext.Provider>
       </AuthContext.Provider>
 
     </div>

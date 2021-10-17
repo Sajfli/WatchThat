@@ -1,12 +1,21 @@
 import { useState, useContext, useEffect } from 'react'
 import classnames from 'classnames'
 import ky from 'ky'
-import AuthContext from 'context/AuthContext'
 
-import style from './styles/Auth.module.scss'
-
+// components
 import { Button, TextInput } from 'Components/Inputs'
+
+// context
+import AuthContext from 'context/Auth'
+
+// hooks
+import useLocalisation from 'utils/hooks/useLocalisation'
+
+// utils
 import parseResponseError from 'utils/parseResponseErr'
+
+// style
+import style from './styles/Auth.module.scss'
 
 const ErrorText = ({mode='signUp', type, authError}) => {
 
@@ -35,59 +44,59 @@ const ErrorText = ({mode='signUp', type, authError}) => {
     }
 }
 
-const SignInForm = ({handleSubmit, height, width, authError, switchRegister, waiting}) => {
+const SignInForm = ({handleSubmit, height, width, authError, switchRegister, waiting, l}) => {
 
     return(
         <form onSubmit={handleSubmit}>
 
                     <h1 className={style.title}>
-                        Sign in to your account
+                        {l('signInTitle')}
                     </h1>
 
                     <div className={style.textInputs}>
 
-                        <TextInput height={height} width={width} placeholder="email" name='email' />
+                        <TextInput height={height} width={width} placeholder={l('inputEmail')} name='email' />
                         <div className={style.spacer} />
 
-                        <TextInput height={height} width={width} placeholder="password" type="password" name='password' />
-                        <div className={style.text}>Forgotten password?</div>
+                        <TextInput height={height} width={width} placeholder={l('inputPassword')} type="password" name='password' />
+                        <div className={style.text}>{l('forgottenPassword')}</div>
 
                     </div>
 
                     <ErrorText mode='signIn' authError={authError} />
 
                     <div className={style.bottom}>
-                        <Button type='submit' waiting={waiting}>Sign In</Button>
+                        <Button type='submit' waiting={waiting}>{l('signIn')}</Button>
                         <div className={style.text} onClick={() => switchRegister()}>
-                            New user? Sign up!
+                            { l('newUser') }
                         </div>
                     </div>
                 </form>
     )
 }
 
-const SignUpForm = ({handleSubmit, height, width, authError, switchRegister, waiting}) => {
+const SignUpForm = ({handleSubmit, height, width, authError, switchRegister, waiting, l}) => {
 
     return(
         <form onSubmit={handleSubmit} autoComplete='off'>
 
                     <h1 className={style.title}>
-                        Create your account
+                        {l('signUnTitle')}
                     </h1>
 
                     <div className={style.textInputs}>
 
-                        <TextInput height={height} width={width} placeholder="email" name='email' />
+                        <TextInput height={height} width={width} placeholder={l('inputEmail')} name='email' />
                         <ErrorText type='email' authError={authError} />
 
                         <div className={style.spacer} />
 
-                        <TextInput height={height} width={width} placeholder="username" name='username' />
+                        <TextInput height={height} width={width} placeholder={l('inputUsername')} name='username' />
                         <ErrorText type='username' authError={authError} />
                         <div className={style.spacer} />
 
                         <TextInput height={height} width={width}
-                            placeholder="password"
+                            placeholder={l('inputPassword')}
                             type="password"
                             name='password'
                             autoComplete='new-password'
@@ -97,9 +106,9 @@ const SignUpForm = ({handleSubmit, height, width, authError, switchRegister, wai
                     </div>
 
                     <div className={style.bottom}>
-                        <Button type='submit' waiting={waiting}>Sign In</Button>
+                        <Button width={'120px'} type='submit' waiting={waiting}>{l('signUp')}</Button>
                         <div className={style.text} onClick={() => switchRegister()}>
-                            <>Already have account? Sign in!</>
+                            {l('existingUser')}
                         </div>
                     </div>
                 </form>
@@ -107,6 +116,8 @@ const SignUpForm = ({handleSubmit, height, width, authError, switchRegister, wai
 }
 
 const Auth = ({authPopupCallback}) => {
+
+    const l = useLocalisation()
 
     const [ waiting, setWaiting ] = useState(false)
     const [ register, setRegister ] = useState(false)
@@ -228,6 +239,7 @@ const Auth = ({authPopupCallback}) => {
                             authError={authError}
                             switchRegister={switchRegister}
                             waiting={waiting}
+                            l={l}
                         />
                     :
                         <SignUpForm
@@ -236,6 +248,7 @@ const Auth = ({authPopupCallback}) => {
                             authError={authError}
                             switchRegister={switchRegister}
                             waiting={waiting}
+                            l={l}
                         />
                 }
 

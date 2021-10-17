@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import AuthContext from 'context/AuthContext'
+import AuthContext from 'context/Auth'
 import style from './styles/SideBar.module.scss'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

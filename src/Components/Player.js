@@ -13,7 +13,7 @@ import {
     faPlayCircle, faPauseCircle
 } from '@fortawesome/free-solid-svg-icons'
 
-import style from './Player.module.scss'
+import style from './styles/Player.module.scss'
 
 const Player = ({video={}}) => {
 

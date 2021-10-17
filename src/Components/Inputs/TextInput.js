@@ -1,10 +1,10 @@
-import { useState } from 'react'
+ import { useState } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 import style from './TextInput.module.scss'
 
-const TextInput = ({width, height, className, inputClassName, ...rest}) => {
+const TextInput = ({width, height, className, inputClassName, type = 'text', ...rest}) => {
 
     const [ focused, setFocused ] = useState(false)
 
@@ -22,7 +22,7 @@ const TextInput = ({width, height, className, inputClassName, ...rest}) => {
 
             <input
                 {...rest}
-                type='text'
+                type={type}
                 className={classnames(inputClassName, style.TextInput)}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
@@ -36,7 +36,9 @@ TextInput.propTypes = {
     height: PropTypes.string.isRequired,
 
     className: PropTypes.string,
-    inputClassName: PropTypes.string
+    inputClassName: PropTypes.string,
+
+    type: PropTypes.string
 }
 
 export default TextInput

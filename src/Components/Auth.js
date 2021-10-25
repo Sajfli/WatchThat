@@ -5,11 +5,9 @@ import ky from 'ky'
 // components
 import { Button, TextInput } from 'Components/Inputs'
 
-// context
-import AuthContext from 'context/Auth'
-
 // hooks
-import useLocalisation from 'utils/hooks/useLocalisation'
+import useLocalisation from 'hooks/useLocalisation'
+import useAuth from 'hooks/useAuth'
 
 // utils
 import parseResponseError from 'utils/parseResponseErr'
@@ -123,7 +121,7 @@ const Auth = ({authPopupCallback}) => {
     const [ register, setRegister ] = useState(false)
     const [ authError, setAuthError ] = useState(null)
 
-    const authContext = useContext(AuthContext)
+    const auth = useAuth()
 
     useEffect(() => {
         setAuthError(null)
@@ -131,35 +129,6 @@ const Auth = ({authPopupCallback}) => {
 
     const handleSubmit = async e => {
         e.preventDefault()
-
-        const signIn = async () => {
-            try {
-                const response = await ky.post('/api/v1/auth/login',{
-                    json: data
-                }).json()
-
-
-                return response
-
-            } catch(err) {
-                return({err: {code: err.response ? err.response.status : 'unknownError'}})
-            }
-        }
-
-        const signUp = async () => {
-            try {
-
-                const response = await ky.post('/api/v1/auth/register', {
-                    json: data
-                }).json()
-
-                return response
-
-            } catch(err) {
-                const { err: errResponse } = await err.response.json()
-                return({err: {code: err.response ? err.response.status : 'unknownError', msg: errResponse}})
-            }
-        }
 
         const formData = new FormData(e.target)
 
@@ -172,50 +141,13 @@ const Auth = ({authPopupCallback}) => {
 
         setWaiting(true)
 
-        if(!register) {
-
-            try {
-                const res = await signIn()
-
-                setWaiting(false)
-
-                const { err, token } = res
-
-                if(!err && token) {
-                    authContext.signIn({token}, authPopupCallback)
-                } else {
-                    setAuthError({code: err.code, msg: err.msg})
-                }
-
-            } catch(err) {
-                console.log('dziwny error 1!')
-            }
+        if(register) {
+            auth.signUp({...data}, authPopupCallback)
         } else {
-
-            try {
-
-                const { err, token } = await signUp()
-
-                setWaiting(false)
-
-                if(!err) {
-                    alert('udalo sie! xd')
-
-                    if(token) {
-                        authContext.signIn({token}, authPopupCallback)
-                    }
-
-                    // authPopupCallback()
-                } else {
-                    err.msg = parseResponseError(err.msg)
-                    setAuthError(err)
-                }
-
-            } catch(err) {
-                console.log('dziwny error 2!', err)
-            }
-
+            auth.signIn({...data}, authPopupCallback)
         }
+
+
     }
 
     function handleEclipseClick({target}) {

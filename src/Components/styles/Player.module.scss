@@ -3,8 +3,10 @@
 .playerContainer {
 
     --player-width: 800px;
+    --max-width: 100%;
 
     width: var(--player-width);
+    max-width: var(--max-width);
     height: calc(9 / 16 * var(--player-width));
 
     background-color: #000;

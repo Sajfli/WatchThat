@@ -1,27 +1,26 @@
-import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 
-import AuthContext from 'context/Auth'
+// import AuthContext from 'context/Auth'
+import useAuth from 'hooks/useAuth'
 import style from './styles/SideBar.module.scss'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import defaultAvatar from 'res/img/default-avatar.jpg'
+import logo from 'res/img/logo-260.png'
 
 
 import {
     faSignInAlt, faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons'
 
+
 const SideBar = ({authPopupCallback}) => {
 
-    const authContext = useContext(AuthContext)
+    // const authContext = useContext(AuthContext)
+    const auth = useAuth()
 
-    const handleSignOut = () => {
-        authContext.signOut()
-
-    }
-
-    const isSignedIn = authContext.isSignedIn
+    const isSignedIn = !!auth.user
 
     return(
         <div
@@ -29,7 +28,15 @@ const SideBar = ({authPopupCallback}) => {
         >
 
             <div className={style.block}>
-                <div className={style.logo}>WT</div>
+                <div className={style.logo}>
+
+                    <div className={style.btn}>
+                        <Link to='/' className='linkFill'>
+                            <img src={logo} className={style.logoImg} alt='WT'/>
+                        </Link>
+                    </div>
+
+                </div>
 
             </div>
 
@@ -43,7 +50,7 @@ const SideBar = ({authPopupCallback}) => {
                                 <img src={defaultAvatar} alt=''/>
                             </div>
 
-                            <div onClick={handleSignOut} className={style.btn}>
+                            <div onClick={auth.signOut} className={style.btn}>
                                 <FontAwesomeIcon icon={faSignOutAlt} />
                             </div>
 

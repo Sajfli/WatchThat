@@ -1,6 +1,17 @@
 @import 'utils/master';
 
 $popup_height: 600;
+$appear_duration: .4s;
+
+@keyframes eclipseAppear {
+    0% {
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        background-color: rgba(0, 0, 0, .7);
+    }
+}
 
 .eclipse {
     position: absolute;
@@ -10,7 +21,22 @@ $popup_height: 600;
 
     background-color: rgba(0, 0, 0, .7);
 
+    overflow: hidden;
+
     z-index: 101;
+
+    animation: eclipseAppear $appear_duration forwards linear;
+
+}
+
+@keyframes appear {
+    0% {
+        transform: translate(-50%, 100vh);
+    }
+
+    100% {
+        transform: translate(-50%, -50%);
+    }
 }
 
 .Auth {
@@ -27,6 +53,7 @@ $popup_height: 600;
     top: 50%;
 
     transform: translate(-50%, -50%);
+    animation: appear $appear_duration forwards;
 }
 
 .title {

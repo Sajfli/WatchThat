@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import ky from 'ky'
+
+import { SocketContext, withSocket } from 'context/RoomSocket'
 
 // utils
 import isURL from 'validator/lib/isURL'
 
 // hooks
-import useLocalisation from 'utils/hooks/useLocalisation'
+import useLocalisation from 'hooks/useLocalisation'
 
 // UI components
 import Player from 'Components/Player'
@@ -18,11 +20,47 @@ import style from './Watch.module.scss'
 const Watch = () => {
 
     const l = useLocalisation()
+    const playerContainer = useRef(null)
+
+    const socket = useContext(SocketContext)
+    const [ room, setRoom ] = useState(null)
 
     // video data
     const [ video, setVideo ] = useState({})
+
     // text input value
     const [ search, setSearch ] = useState('')
+
+    useEffect(() => {
+
+        console.log('!!! socket effect !!!')
+
+        if(!socket) return
+
+        console.log('!!! przeszło !!!')
+
+        socket.emit('get room id')
+
+        socket.on('room id', roomId => {
+            socket.emit('room join', roomId)
+        })
+
+        socket.on('room joined', roomId => {
+            setRoom(roomId)
+            console.log('you have joined the room', roomId)
+        })
+
+        socket.on('userConnected', () => {
+            console.log('new user connected to the room')
+        })
+
+        socket.on('new video', data => {
+            // console.log('got new video from socket!', data)
+            setVideo(data)
+        })
+
+        return () => socket.disconnect()
+    }, [socket])
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -48,6 +86,11 @@ const Watch = () => {
 
                 setVideo(_video)
 
+                if(socket) {
+                    console.log('sending video to room')
+                    socket.emit('new video', _video)
+                }
+
             } catch(err) {
                 console.log(err)
             }
@@ -58,7 +101,7 @@ const Watch = () => {
     }
 
     return(
-        <div>
+        <div ref={playerContainer} className={style.container}>
 
             <div className={style.playerBox}>
                 <form onSubmit={handleSubmit}>
@@ -72,7 +115,7 @@ const Watch = () => {
                     />
                 </form>
 
-                <Player video={video} />
+                <Player video={video} playerContainer={playerContainer} socket={socket} />
             </div>
 
         </div>
@@ -80,4 +123,4 @@ const Watch = () => {
 
 }
 
-export default Watch
+export default withSocket(Watch)

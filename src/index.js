@@ -3,9 +3,15 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
+
+
+import AppProviders from 'providers/AppProviders'
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+      <AppProviders>
+        <App />
+      </AppProviders>
   </React.StrictMode>,
   document.getElementById('root')
 );

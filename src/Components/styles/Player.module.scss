@@ -1,5 +1,7 @@
 @import 'utils/master';
 
+$controls-height: 50px;
+
 .playerContainer {
 
     --player-width: 800px;
@@ -33,6 +35,10 @@
     width: 100%; height: 100%;
     top: 0; left: 0;
     // pointer-events: none;
+}
+
+.moveControls.fullscreen .ReactPlayer {
+    height: calc(100% - #{$controls-height});
 }
 
 .Player.mouseNotMoving {
@@ -72,7 +78,7 @@
     position: absolute;
     bottom: 0; left: 0;
 
-    height: 50px; width: 100%;
+    height: $controls-height; width: 100%;
 
     padding: 10px;
 
@@ -82,6 +88,17 @@
     background: linear-gradient(#0000, #000000a9);
 
     z-index: 9999;
+}
+
+.moveControls .controls {
+    // background-color: blue;
+    bottom: -$controls-height;
+    display: flex !important;
+    background-color: #000;
+}
+
+.moveControls.fullscreen .controls {
+    bottom: 0;
 }
 
 .leftCorner {
@@ -187,10 +204,12 @@
 
 @keyframes play {
     from {
-        transform: translate(-50%, -50%) scale(.5);
+        transform: translate(-50%, -50%) scale(.6);
+        opacity: .8;
     }
     to {
-        transform: translate(-50%, -50%) scale(1);
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0;
     }
 }
 
@@ -200,13 +219,14 @@
 
     position: absolute;
     top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(.8);
+    transform: translate(-50%, -50%);
     font-size: 100px;
-    color: #0000008c;
+    color: #161616;
+
     z-index: 100;
 
     animation-name: play;
     animation-timing-function: ease-in-out;
-    animation-duration: .2s;
+    animation-duration: .6s;
     animation-fill-mode: forwards;
 }

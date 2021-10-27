@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useContext } from 'react'
 import ky from 'ky'
+import URL from 'url-parse'
 
 import { SocketContext, withSocket } from 'context/RoomSocket'
 
@@ -33,29 +34,29 @@ const Watch = () => {
 
     useEffect(() => {
 
-        console.log('!!! socket effect !!!')
-
         if(!socket) return
 
-        console.log('!!! przeszło !!!')
-
+        // send query for room id
         socket.emit('get room id')
 
+        // handle room id and send query to join room
         socket.on('room id', roomId => {
             socket.emit('room join', roomId)
         })
 
+        // handle room joined event
         socket.on('room joined', roomId => {
             setRoom(roomId)
             console.log('you have joined the room', roomId)
         })
 
+        // when a new user connect to the room
         socket.on('userConnected', () => {
             console.log('new user connected to the room')
         })
 
+        // handle new video from other user in room
         socket.on('new video', data => {
-            // console.log('got new video from socket!', data)
             setVideo(data)
         })
 
@@ -83,6 +84,8 @@ const Watch = () => {
                 _video.indirect = res.indirect ? true : false
 
                 if(res.title) _video.title = res.title
+
+                _video.hostname = new URL(_video.url[0]).hostname
 
                 setVideo(_video)
 

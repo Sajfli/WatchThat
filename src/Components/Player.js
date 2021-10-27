@@ -16,18 +16,6 @@ import {
 import style from './styles/Player.module.scss'
 import { socket } from 'context/RoomSocket'
 
-const isSubArrayEnd = (A, B) => {
-    if (A.length < B.length)
-      return false;
-    let i = 0;
-    while (i < B.length) {
-      if (A[A.length - i - 1] !== B[B.length - i - 1])
-        return false;
-      i++;
-    }
-    return true;
-  };
-
 const Player = ({video={}, playerContainer}) => {
 
     const [ playing, setPlaying ]           = useState(true)
@@ -38,70 +26,25 @@ const Player = ({video={}, playerContainer}) => {
 
     const [ mouseMoving, setMouseMoving ]   = useState(true)
 
-    // only to handle YT seek
-    const [ YT_sequence, YT_setSequence ] = useState([]);
-    const [ YT_timer, YT_setTimer ] = useState(null);
-
     const handleFullScreen = useFullScreenHandle()
 
     const playerRef = useRef(null)
     const playCircleRef = useRef(null)
+
     const timer = useRef(null)
 
-    const YT_handleStateChange = e => YT_handleEvent(e.data)
-    const YT_handleSeek = () => console.log("Seek!!!!!!!!!!!");
-
-    const YT_handleEvent = type => {
-        // Update sequence with current state change event
-        console.log('array', YT_sequence)
-
-        YT_setSequence([...YT_sequence, type]);
-
-        if (type === 1 && isSubArrayEnd(YT_sequence, [3]) && !YT_sequence.includes(-1)) {
-          YT_handleSeek(); // Arrow keys seek
-          YT_setSequence([]); // Reset event sequence
-        } else {
-          clearTimeout(YT_timer); // Cancel previous event
-          if (type !== 3) { // If we're not buffering,
-            let timeout = setTimeout(function () { // Start timer
-                //   if (type === 1) console.log('play', type)
-                //   else if (type === 2) console.log('pause', type)
-                YT_setSequence([]); // Reset event sequence
-            }, 250);
-            YT_setTimer(timeout);
-          }
-        }
-      };
-
     useEffect(() => {
-        if(!playerRef.current) return
 
-        const internalPlayer = playerRef.current.getInternalPlayer()
-        // console.log(internalPlayer)
-        if(!internalPlayer) return
+        // SOCKET HANDLER
 
-        // internalPlayer.onStateChange = YT_handleStateChange
-        // internalPlayer.onPlayerStateChange = console.log
-        internalPlayer.addEventListener('onStateChange', YT_handleStateChange)
-
-        // internalPlayer.onStateChange = YT_handleStateChange
-
-        return () => {
-            internalPlayer.removeEventListener('onStateChange', YT_handleStateChange)
-        }
-
-    }, [playerRef, YT_handleStateChange])
-
-    useEffect(() => {
         // seek
         socket.on('seek', seekTo)
 
         // pause / unpause
-        socket.on('playing', ({playing: p, progress}) => {
+        socket.on('playing', ({playing: p}) => {
 
             if(p !== playing) {
                 setPlaying(p)
-                // seekTo(progress/100)
             }
 
 
@@ -127,39 +70,30 @@ const Player = ({video={}, playerContainer}) => {
 
         if(target.tagName && (target.tagName === 'VIDEO' || datasetCond)) {
 
-            // if(playing)
-            //     sendChange('paused')
-            // else sendChange('unpaused')
-
-            // if(socket)
-                // socket.emit('playing', {playing: !playing, progress})
-
             setPlaying(!playing)
 
             if(playCircleRef.current) {
+
+                playCircleRef.current.style.display = 'none'
                 playCircleRef.current.style.display = 'block'
+
                 setTimeout(() => {
                     playCircleRef.current.style.display = 'none'
-                }, 200)
+                }, 600)
+
             }
         }
     }
 
     const handleSeek = e => {
 
-        alert('seek')
-
         if(seekTo(e/100)) {
             sendChange('seek', e/100)
         }
-            // if(socket)
-            //     socket.emit('seek', e/100)
     }
 
     const handleProgress = _progress => {
         setProgress(_progress.played*100)
-
-        // sendChange('progress', _progress)
     }
 
     const handleMouseMove = () => {
@@ -171,14 +105,11 @@ const Player = ({video={}, playerContainer}) => {
     }
 
     const sendChange = (action, value) => {
-        // console.log(action, value)
-        // console.log(action, value)
 
         switch(action) {
             case 'paused': case 'unpaused':
                 const _playing = action === 'unpaused'
-                // if(_playing === playing)
-                //     break
+
                 socket.emit('playing', { playing: _playing, progress })
                 break
             case 'seek':
@@ -190,6 +121,16 @@ const Player = ({video={}, playerContainer}) => {
 
     }
 
+    const handlePlay = () => {
+        if(!playing) setPlaying(true)
+        sendChange('unpaused')
+    }
+
+    const handlePause = () => {
+        if(playing) setPlaying(false)
+        sendChange('paused')
+    }
+
     const
         url = video.url || [],
         title = video.title || null,
@@ -197,16 +138,24 @@ const Player = ({video={}, playerContainer}) => {
 
     const containerWidth = playerContainer.current ? playerContainer.current.offsetWidth : null
 
+    // if it's a youtube player move contols under youtube iframe
+    const moveControls = /youtube/gi.test(video.hostname)
+
     return(
         <div
-            className={classnames(style.playerContainer, expanded ? style.expanded : null)}
+            className={classnames(
+                style.playerContainer,
+                expanded ? style.expanded : null,
+                moveControls && style.moveControls,
+                handleFullScreen.active && style.fullscreen
+            )}
             style={containerWidth && {'--max-width': containerWidth + 'px'}}
         >
             <FullScreen
                 handle={handleFullScreen}
             >
                 <div
-                    className={classnames(style.Player, !mouseMoving && style.mouseNotMoving)}
+                    className={classnames(style.Player, (!mouseMoving && !moveControls) && style.mouseNotMoving)}
                     onClick={handlePlayerClick}
                     onMouseMove={handleMouseMove}
                 >
@@ -229,14 +178,25 @@ const Player = ({video={}, playerContainer}) => {
                                 onProgress={handleProgress}
                                 ref={playerRef}
 
-                                onPlay={() => sendChange('unpaused')}
-                                onPause={() => sendChange('paused')}
+                                onPlay={handlePlay}
+                                onPause={handlePause}
 
                                 config={{
                                     youtube: {
                                         playerVars: {
-                                            controls: 1
+                                            autoplay: 1,
+                                            controls: 0,
+                                            disablekb: 1,
+                                            cc_load_policy: 1,
+                                            iv_load_policy: 3,
+                                            modestbranding: 1,
+                                            playsinline: 1,
+                                            enablecastapi: 0,
+                                            rel: 0,
+                                            showinfo: 0,
+                                            enablejsonapi: 1
                                         },
+
                                         onUnstarted: () => console.log('failed to autostart')
                                 }
                                 }}
@@ -245,15 +205,14 @@ const Player = ({video={}, playerContainer}) => {
                     </div>
 
 
-                    { title && <div className={style.title}>{title}</div> }
+                    { (title && !indirect) && <div className={style.title}>{title}</div> }
 
                     <div className={style.playCircle} ref={playCircleRef}>
                         <FontAwesomeIcon icon={playing ? faPlayCircle : faPauseCircle} />
                     </div>
 
-                    {
-                        !indirect && (
-                            <div className={style.controls}>
+
+                    <div className={style.controls}>
 
                         <div className={style.leftCorner}>
                             <div className={classnames(style.controlComponent, style.btn)} data-pauseonclick='true'>
@@ -395,12 +354,15 @@ const Player = ({video={}, playerContainer}) => {
                                 </div>
                             </div>
 
-                            <div
-                                className={classnames(style.expand, style.controlComponent, style.btn)}
-                                onClick={() => setExpanded(!expanded)}
-                            >
-                                <FontAwesomeIcon icon={expanded ? faCompressAlt : faExpandAlt} />
-                            </div>
+                            {
+                                !handleFullScreen.active &&
+                                <div
+                                    className={classnames(style.expand, style.controlComponent, style.btn)}
+                                    onClick={() => setExpanded(!expanded)}
+                                >
+                                    <FontAwesomeIcon icon={expanded ? faCompressAlt : faExpandAlt} />
+                                </div>
+                            }
 
                             <div
                                 className={classnames(style.fullScreen, style.controlComponent, style.btn)}
@@ -416,8 +378,6 @@ const Player = ({video={}, playerContainer}) => {
                         </div>
 
                     </div>
-                        )
-                    }
 
 
 

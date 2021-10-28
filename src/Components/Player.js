@@ -139,7 +139,7 @@ const Player = ({video={}, playerContainer}) => {
     const containerWidth = playerContainer.current ? playerContainer.current.offsetWidth : null
 
     // if it's a youtube player move contols under youtube iframe
-    const moveControls = /youtube/gi.test(video.hostname)
+    const moveControls = /youtu.*be/gi.test(video.hostname)
 
     return(
         <div

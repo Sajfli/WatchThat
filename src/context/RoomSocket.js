@@ -1,6 +1,6 @@
 import React from 'react'
 import socketio from 'socket.io-client';
-import { SOCKET_URL, SOCKET_PATH } from 'config';
+import { SOCKET_URL, SOCKET_PATH } from 'config/app';
 
 const socket = socketio.connect(SOCKET_URL, { path: SOCKET_PATH })
 

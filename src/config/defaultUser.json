@@ -1,0 +1,16 @@
+{
+    "keys": {
+        "pause": "k",
+
+        "seek10f": "l",
+        "seek10b": "j",
+        "seek5f": "ArrowRight",
+        "seek5b": "ArrowLeft",
+
+        "volumeUp": "ArrowUp",
+        "volumeDown": "ArrowDown",
+
+        "spacebar": " ",
+        "fullScreen": "f"
+    }
+}

@@ -6,6 +6,10 @@ import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import { keys as defKeys } from 'config/defaultUser'
+
+import useKeyHandle from 'hooks/useKeyHandle'
+
 
 import {
     faPause, faPlay, faVolumeUp, faVolumeDown, faVolumeOff,
@@ -18,13 +22,13 @@ import { socket } from 'context/RoomSocket'
 
 const Player = ({video={}, playerContainer}) => {
 
-    const [ playing, setPlaying ]           = useState(true)
-    const [ muted, setMuted ]               = useState(false)
-    const [ expanded, setExpanded ]         = useState(false)
-    const [ progress, setProgress ]         = useState(0)
-    const [ volume, setVolume ]             = useState(50)
+    const [ playing, setPlaying ]               = useState(true)
+    const [ muted, setMuted ]                   = useState(false)
+    const [ expanded, setExpanded ]             = useState(false)
+    const [ progress, setProgress ]             = useState(0)
+    const [ volume, setVolume ]                 = useState(50)
 
-    const [ mouseMoving, setMouseMoving ]   = useState(true)
+    const [ mouseMoving, setMouseMoving ]       = useState(true)
 
     const handleFullScreen = useFullScreenHandle()
 
@@ -32,6 +36,66 @@ const Player = ({video={}, playerContainer}) => {
     const playCircleRef = useRef(null)
 
     const timer = useRef(null)
+
+    const handleKey = e => {
+
+        const actionKey = defKeys
+
+        switch(e.key) {
+            case actionKey.pause: case actionKey.spacebar:
+
+                if(!playing)
+                    handlePlay()
+                else handlePause()
+
+                break
+
+            case actionKey.seek10f:
+            case actionKey.seek10b:
+            case actionKey.seek5f:
+            case actionKey.seek5b:
+
+                // get current time in seconds
+                let
+                    time = playerRef.current.getCurrentTime()
+
+                    // 2nd switch to get specific key
+                    switch(e.key) {
+                        case actionKey.seek10f:
+                            time += 10
+                            break
+                        case actionKey.seek10b:
+                            time -= 10
+                            break
+                        case actionKey.seek5f:
+                            time += 5
+                            break
+                        case actionKey.seek5b:
+                            time -= 5
+                            break
+                        default:
+                            break
+                    }
+
+
+                    seekTo(time)
+
+                break;
+
+            case actionKey.fullScreen:
+                if(handleFullScreen.active)
+                    handleFullScreen.exit()
+                else handleFullScreen.enter()
+
+                break
+
+            default:
+                break
+        }
+    }
+
+    // defKeys is settings' array with keys and actions
+    useKeyHandle(Object.values(defKeys), handleKey)
 
     useEffect(() => {
 
@@ -150,6 +214,8 @@ const Player = ({video={}, playerContainer}) => {
                 handleFullScreen.active && style.fullscreen
             )}
             style={containerWidth && {'--max-width': containerWidth + 'px'}}
+
+            tabIndex='0'
         >
             <FullScreen
                 handle={handleFullScreen}

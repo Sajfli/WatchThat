@@ -11,8 +11,8 @@ import isURL from 'validator/lib/isURL'
 import useLocalisation from 'hooks/useLocalisation'
 
 // UI components
-import Player from 'Components/Player'
-import { TextInput } from 'Components/Inputs'
+import Player from 'components/organisms/Player/Player'
+import TextInput from 'components/atoms/Input/Input'
 
 // style
 import style from './Watch.module.scss'

@@ -17,7 +17,7 @@ import {
     faPlayCircle, faPauseCircle
 } from '@fortawesome/free-solid-svg-icons'
 
-import style from './styles/Player.module.scss'
+import style from './Player.module.scss'
 import { socket } from 'context/RoomSocket'
 
 const Player = ({video={}, playerContainer}) => {

@@ -2,9 +2,9 @@
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-import style from './TextInput.module.scss'
+import style from './Input.module.scss'
 
-const TextInput = ({width, height, className, inputClassName, type = 'text', ...rest}) => {
+const Input = ({width, height, className, inputClassName, type = 'text', ...rest}) => {
 
     const [ focused, setFocused ] = useState(false)
 
@@ -31,7 +31,7 @@ const TextInput = ({width, height, className, inputClassName, type = 'text', ...
     )
 }
 
-TextInput.propTypes = {
+Input.propTypes = {
     width: PropTypes.string.isRequired,
     height: PropTypes.string.isRequired,
 
@@ -41,4 +41,4 @@ TextInput.propTypes = {
     type: PropTypes.string
 }
 
-export default TextInput
+export default Input

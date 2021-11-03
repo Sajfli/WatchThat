@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom'
 
-// import AuthContext from 'context/Auth'
 import useAuth from 'hooks/useAuth'
-import style from './styles/SideBar.module.scss'
+import style from './SideBar.module.scss'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -17,7 +16,6 @@ import {
 
 const SideBar = ({authPopupCallback}) => {
 
-    // const authContext = useContext(AuthContext)
     const auth = useAuth()
 
     const isSignedIn = !!auth.user

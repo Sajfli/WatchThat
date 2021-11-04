@@ -1,0 +1,12 @@
+.textContent {
+    margin: 20px 0 40px;
+}
+
+.textContent.center {
+    text-align: center;
+
+}
+
+.textContent.center > div {
+    margin: 0 auto;
+}

@@ -4,7 +4,7 @@ import classnames from 'classnames'
 
 import style from './Input.module.scss'
 
-const Input = ({width, height, className, inputClassName, type = 'text', ...rest}) => {
+const Input = ({width = 160, height = 40, className, inputClassName, type = 'text', ...rest}) => {
 
     const [ focused, setFocused ] = useState(false)
 

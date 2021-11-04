@@ -1,7 +1,7 @@
 import React from 'react';
 
 // template
-import MainTemplate from 'components/templates/MainTemplate'
+import MainTemplate from 'components/pages/MainTemplate'
 
 // logic
 import Router from './routing/Router'

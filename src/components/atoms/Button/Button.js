@@ -1,10 +1,10 @@
 import classnames from 'classnames'
 import style from './Button.module.scss'
 
-const Button = ({children, type='button', width='100px', waiting=false}) => {
+const Button = ({children, type='button', width='100px', waiting=false, style: inlineStyle = null, ...rest}) => {
     return(
         <div
-            style={{width}}
+            style={{width, ...inlineStyle}}
 
             className={classnames(style.Button, waiting ? style.waiting : null)}
         >
@@ -14,6 +14,7 @@ const Button = ({children, type='button', width='100px', waiting=false}) => {
             }
 
             <button
+                {...rest}
                 type={type}
                 className={style.btn}
             >{children}</button>

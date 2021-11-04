@@ -12,5 +12,11 @@
     "inputPassword": "Password",
 
     "signIn": "Sign In",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+
+
+    "hello": "Hello!",
+    "youNeedToJoinARoom": "To watch something you need to join a room.",
+    "createNewRoom": "Create new room",
+    "joinExistingRoom": "Join an existing room"
 }

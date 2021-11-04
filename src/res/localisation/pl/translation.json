@@ -12,5 +12,11 @@
     "inputPassword": "Hasło",
 
     "signIn": "Zaloguj się",
-    "signUp": "Zarejestruj się"
+    "signUp": "Zarejestruj się",
+
+
+    "hello": "Witaj!",
+    "youNeedToJoinARoom": "Żeby coś obejrzeć dołącz do pokoju.",
+    "createNewRoom": "Stwórz nowy pokój",
+    "joinExistingRoom": "Dołącz do istniejącego"
 }

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import classnames from 'classnames'
 
 // components
 import SignUpForm from './SignUpForm'
@@ -8,9 +7,6 @@ import SignInForm from './SignInForm'
 // hooks
 import useLocalisation from 'hooks/useLocalisation'
 import useAuth from 'hooks/useAuth'
-
-// style
-import style from './Auth.module.scss'
 
 
 const Auth = ({authPopupCallback}) => {
@@ -54,7 +50,7 @@ const Auth = ({authPopupCallback}) => {
     const height = '40px', width = '100%'
 
     return(
-        <div className={style.Auth} onClick={e => e.stopPropagation()}>
+        <div onClick={e => e.stopPropagation()}>
 
             {
 

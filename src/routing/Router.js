@@ -3,7 +3,7 @@ import {
     Route
 } from 'react-router-dom'
 
-import { Watch } from '../Views'
+import { Watch, Home } from '../Views'
 
 const Router = () => {
     return(
@@ -13,6 +13,10 @@ const Router = () => {
         <Switch>
 
             <Route exact path='/'>
+                <Home />
+            </Route>
+
+            <Route exact path='/room'>
                 <Watch />
             </Route>
 

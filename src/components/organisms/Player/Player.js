@@ -20,7 +20,7 @@ import {
 import style from './Player.module.scss'
 import { socket } from 'context/RoomSocket'
 
-const Player = ({video={}, playerContainer}) => {
+const Player = ({video={}, playerContainer, ref}) => {
 
     const [ playing, setPlaying ]               = useState(true)
     const [ muted, setMuted ]                   = useState(false)
@@ -29,6 +29,10 @@ const Player = ({video={}, playerContainer}) => {
     const [ volume, setVolume ]                 = useState(50)
 
     const [ mouseMoving, setMouseMoving ]       = useState(true)
+
+    useEffect(() => {
+        ref.current = {  playing, progress }
+    }, [progress, playing])
 
     const handleFullScreen = useFullScreenHandle()
 

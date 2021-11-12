@@ -16,7 +16,7 @@ const Router = () => {
                 <Home />
             </Route>
 
-            <Route exact path='/room'>
+            <Route exact path={['/room/:id', '/room*']}>
                 <Watch />
             </Route>
 

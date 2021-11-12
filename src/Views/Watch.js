@@ -16,6 +16,7 @@ import TextInput from 'components/atoms/Input/Input'
 
 // style
 import style from './Watch.module.scss'
+import { useHistory, useParams } from 'react-router'
 
 
 const Watch = () => {
@@ -23,8 +24,10 @@ const Watch = () => {
     const l = useLocalisation()
     const playerContainer = useRef(null)
 
+    const history = useHistory()
+    const params = useParams()
     const socket = useContext(SocketContext)
-    const [ room, setRoom ] = useState(null)
+    // const [ room, setRoom ] = useState(null)
 
     // video data
     const [ video, setVideo ] = useState({})
@@ -32,21 +35,22 @@ const Watch = () => {
     // text input value
     const [ search, setSearch ] = useState('')
 
+    const playerRef = useRef({})
+
     useEffect(() => {
 
-        if(!socket) return
+        if(!socket || !params.id) {
+            return history.push('/')
+        }
 
-        // send query for room id
-        socket.emit('get room id')
-
-        // handle room id and send query to join room
-        socket.on('room id', roomId => {
-            socket.emit('room join', roomId)
-        })
+        socket.emit('room join', params.id)
 
         // handle room joined event
-        socket.on('room joined', roomId => {
-            setRoom(roomId)
+        socket.on('room joined', ({roomId, video}) => {
+            if(video) {
+                setVideo(video)
+                socket.emit('get watchtime')
+            }
             console.log('you have joined the room', roomId)
         })
 
@@ -58,6 +62,19 @@ const Watch = () => {
         // handle new video from other user in room
         socket.on('new video', data => {
             setVideo(data)
+        })
+
+        socket.on('get watchtime', () => {
+            // socket.emit('send watchtime', {video, })
+            if(playerRef.current) {
+
+                const { playing, progress } = playerRef.current
+
+                socket.emit('send watchtime', {video, state: {
+                    playing, progress
+                }})
+            }
+
         })
 
         return () => socket.disconnect()
@@ -118,7 +135,7 @@ const Watch = () => {
                     />
                 </form>
 
-                <Player video={video} playerContainer={playerContainer} socket={socket} />
+                <Player video={video} playerContainer={playerContainer} socket={socket} ref={playerRef} />
             </div>
 
         </div>

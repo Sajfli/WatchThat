@@ -31,6 +31,8 @@ const Player = ({video={}, playerContainer}) => {
 
     const [ mouseMoving, setMouseMoving ]       = useState(true)
 
+    const [ containerWidth, setContainerWidth ] = useState(null)
+
     const handleFullScreen = useFullScreenHandle()
 
     const playerRef = useRef(null)
@@ -135,6 +137,23 @@ const Player = ({video={}, playerContainer}) => {
 
     }, [playing, progress, video, socket])
 
+    // container width
+    useEffect(() => {
+        const updateWidth = () => {
+            if(!playerContainer.current) return
+
+            setContainerWidth(playerContainer.current.offsetWidth)
+
+        }
+
+        updateWidth()
+
+        window.addEventListener('resize', updateWidth)
+
+        return () => window.removeEventListener('resize', updateWidth)
+
+    }, [])
+
     const seekTo = t => {
         if(!playerRef.current) return false
 
@@ -213,8 +232,6 @@ const Player = ({video={}, playerContainer}) => {
         url = video.url || [],
         title = video.title || null,
         indirect = video.indirect || false
-
-    const containerWidth = playerContainer.current ? playerContainer.current.offsetWidth : null
 
     // if it's a youtube player move contols under youtube iframe
     const moveControls = /youtu.*be/gi.test(video.hostname)

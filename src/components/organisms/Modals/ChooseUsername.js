@@ -29,13 +29,9 @@ const ChooseUsername = ({ isOpen, handleCloseModal, cb }) => {
             } else console.log(err)
 
         })
-
-
-            // sprawdzac username przy polaczeniu do pokoju, dla zalogowanych porownywac z baza i w razie czego wyslac update
     }
 
     const goToAuth = () => {
-        // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa ZW
         handleCloseModal()
         openAuthModal()
     }

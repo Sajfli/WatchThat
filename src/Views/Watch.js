@@ -7,14 +7,16 @@ import useSocket from 'hooks/useSocket'
 
 // utils
 import isURL from 'validator/lib/isURL'
-// import { getUsername } from 'services/getUserData'
 
 // hooks
 import useLocalisation from 'hooks/useLocalisation'
+import useModal from 'hooks/useModal'
+import useAuthModal from 'hooks/useAuthModal'
 
 // UI components
 import Player from 'components/organisms/Player/Player'
 import TextInput from 'components/atoms/Input/Input'
+import ChooseUsername from 'components/organisms/Modals/ChooseUsername'
 
 // style
 import style from './Watch.module.scss'
@@ -28,6 +30,9 @@ const Watch = () => {
 
     const history = useHistory()
     const params = useParams()
+
+    const usernameModal = useModal()
+    const [ isAuthModalOpen ] = useAuthModal()
 
     const [ socket, socketUserId, initSocket ] = useSocket()
 
@@ -68,15 +73,23 @@ const Watch = () => {
 
     }, [socket, auth, socketUserId]) // eslint-disable-line
 
-    // initial
+    // check for param and username
     useEffect(() => {
         if(!params.id) history.push('/')
+        if(!username && (!usernameModal.isOpen && !isAuthModalOpen)) {
+            usernameModal.handleOpenModal()
+            if(!!currentRoom && currentRoom.length > 0) {
+                setCurrentRoom(null)
+                if(!!socket)
+                    socket.emit('room_leave')
+            }
+        }
 
-    }, [params.id]) // eslint-disable-line
+    }, [params.id, username, usernameModal.isOpen, isAuthModalOpen]) // eslint-disable-line
 
     // join room
     useEffect(() => {
-        if(currentRoom === params.id || !socket || !params.id) return
+        if(currentRoom === params.id || !socket || !params.id || !username) return
 
         // console.log(params.id, currentRoom)
 
@@ -155,6 +168,14 @@ const Watch = () => {
 
     return(
         <div ref={playerContainer} className={style.container}>
+
+            {!username &&
+                <ChooseUsername
+                    isOpen={usernameModal.isOpen}
+                    handleCloseModal={usernameModal.handleCloseModal}
+                    cb={(...params) => {console.log(...params)}}
+                />
+            }
 
             <div className={style.playerBox}>
                 <form onSubmit={handleSubmit}>

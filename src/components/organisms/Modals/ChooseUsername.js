@@ -7,22 +7,42 @@ import Title from 'components/atoms/Title/Title'
 import Modal from '../Modal/Modal'
 import Button from 'components/atoms/Button/Button'
 
+import useAuthModal from 'hooks/useAuthModal'
+
+import validateUsername from 'utils/validateUsername'
+
 
 const ChooseUsername = ({ isOpen, handleCloseModal, cb }) => {
 
     const [ username, setUsername ] = useState('')
+    const [ , openAuthModal ] = useAuthModal()
 
     const handleSubmit = e => {
 
         e.preventDefault()
 
+        // validate
+        validateUsername(username, (err) => {
+            if(!err) {
+                localStorage.setItem('tempUsername', username)
+                handleCloseModal()
+            } else console.log(err)
+
+        })
+
+
+            // sprawdzac username przy polaczeniu do pokoju, dla zalogowanych porownywac z baza i w razie czego wyslac update
+    }
+
+    const goToAuth = () => {
+        // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa ZW
         handleCloseModal()
-        cb(username)
+        openAuthModal()
     }
 
     return(
         <Modal handleClose={handleCloseModal} isOpen={isOpen}>
-            <Title type='small'>Tworzenie pokoju</Title>
+            <Title type='small' center>Nazwa użytkownika</Title>
 
             <form onSubmit={handleSubmit}>
 
@@ -32,7 +52,7 @@ const ChooseUsername = ({ isOpen, handleCloseModal, cb }) => {
                 </TextContent>
 
                 <TextContent center>
-                    <Button width='200px' type='submit'>Stwórz pokój!</Button>
+                    <Button width='200px' type='submit'>Ustaw nazwe użytkownika</Button>
                 </TextContent>
 
             </form>
@@ -40,7 +60,7 @@ const ChooseUsername = ({ isOpen, handleCloseModal, cb }) => {
             <TextContent center>
                 <p>...lub</p>
                 <p>Zalogować się!</p>
-                <Button width='200px'>Przejdź do logowania!</Button>
+                <Button width='200px' onClick={goToAuth}>Przejdź do logowania!</Button>
             </TextContent>
 
 

@@ -1,0 +1,12 @@
+{
+    "noUsername": "noUsernameError",
+    "usernameLength": "invalidUsernameLengthError",
+    "usernameAlphanumeric": "usernameAlphanumericError",
+    "noEmail": "noEmailError",
+    "emailFormat": "invalidEmailFormatError",
+    "emailTaken": "emailTakenError",
+    "noPassword": "noPasswordError",
+    "passwordLength": "invalidPasswordLengthError",
+
+    "cantGenerateId": "generateIdError"
+}

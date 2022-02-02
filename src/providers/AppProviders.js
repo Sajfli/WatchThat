@@ -1,5 +1,6 @@
 import { AuthProvider } from 'hooks/useAuth'
 import { LocalisationProvider } from 'hooks/useLocalisation';
+import { SocketProvider } from 'hooks/useSocket';
 import { BrowserRouter } from 'react-router-dom'
 
 
@@ -8,7 +9,9 @@ const AppProviders = ({children}) => {
         <BrowserRouter>
             <LocalisationProvider>
                 <AuthProvider>
-                    {children}
+                    <SocketProvider>
+                        {children}
+                    </SocketProvider>
                 </AuthProvider>
             </LocalisationProvider>
         </BrowserRouter>

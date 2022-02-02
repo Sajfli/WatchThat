@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import ky from 'ky'
 import URL from 'url-parse'
 
-
 import useSocket from 'hooks/useSocket'
 
 // utils
@@ -21,6 +20,7 @@ import style from './Watch.module.scss'
 import { useHistory, useParams } from 'react-router'
 import useAuth from 'hooks/useAuth'
 
+
 const Watch = () => {
 
     const l = useLocalisation()
@@ -28,95 +28,107 @@ const Watch = () => {
 
     const history = useHistory()
     const params = useParams()
+    // const socket = useContext(SocketContext)
 
-    const [ socket, socketUserId, initSocket ] = useSocket()
+    const socket = useSocket()
 
     const auth = useAuth()
+    // const [ room, setRoom ] = useState(null)
+
+    const [ username, setUsername ] = useState(null)
+    const [ connectedId, setConnectedId ] = useState(null)
 
     // video data
     const [ video, setVideo ] = useState({})
-    const [ currentRoom, setCurrentRoom ] = useState(null)
 
     // text input value
     const [ search, setSearch ] = useState('')
 
-    const username = auth.user ? auth.user.username : localStorage.getItem('tempUsername')
+    // const playerRef = useRef({})
 
-    // handle unmount
-    useEffect(() => {
-        return () => {
-            if(!!socket)
-                socket.emit('room_leave')
-        }
-    }, [socket])
-
-    // init socket
-    useEffect(() => {
-        if(
-            !!socket &&
-            (
-                (
-                    auth.user && (socketUserId === auth.user._id)
-                ) ||
-                (
-                    !auth.user && !socketUserId
-                )
-            )
-        ) return
-
-        initSocket(auth)
-
-    }, [socket, auth, socketUserId]) // eslint-disable-line
-
-    // initial
-    useEffect(() => {
-        if(!params.id) history.push('/')
-
-    }, [params.id]) // eslint-disable-line
-
-    // join room
-    useEffect(() => {
-        if(currentRoom === params.id || !socket || !params.id) return
-
-        // console.log(params.id, currentRoom)
-
-        setCurrentRoom(params.id)
-
-        socket.emit('room_join', {clearId: params.id, username})
-
-    }, [currentRoom, params.id, username, socket])
-
-
-    // socket handlers
+    // join to the room
     useEffect(() => {
 
-        if(!socket) return
+        if(!username || !params.id || !socket || !socket.connected)
+            return
 
-        socket.on('room_joined', () => {
-            console.log('room_joined')
-        })
+        if(connectedId === params.id) return
 
-        socket.on('room_invalid', () => {
-            console.log('room_invalid')
-        })
+        socket.emit('room join', {roomId: params.id, username: username})
+        setConnectedId(params.id)
 
-        socket.on('room_error', () => {
-            console.log('room_error')
-        })
+    }, [username, params.id, socket, socket.connected, connectedId])
 
-        socket.on('user_joined', (username) => {
-            console.log(`${username} joined the room`)
-        })
-
-        return () => {
-            socket.off('room_invalid')
-            socket.off('room_joined')
-            socket.off('room_error')
-            socket.off('user_joined')
+    // HANDLE USERNAME
+    useEffect(() => {
+        let _username = auth.user || localStorage.getItem('tempUsername')
+        if(!_username) {
+            _username = prompt('username')
+            localStorage.setItem('tempUsername', username)
         }
 
-    }, [socket])
+        setUsername(_username)
+    }, [auth.user])
 
+    // HANDLE ROOM ID
+    useEffect(() => {
+
+        if(!params.id || !socket) {
+            return history.push('/')
+        }
+
+    }, [params.id])
+
+
+    // HANDLE SOCKET
+    useEffect(() => {
+
+        socket.connect()
+
+        // handle room joined event
+        socket.on('room joined', roomId => {
+            console.log('you have joined the room', roomId)
+        })
+
+        // when a new user connect to the room
+        socket.on('user connected', username => {
+            console.log(username + ' connected to the room')
+        })
+
+        socket.on('user disconnected', username => {
+            console.log(username + ' disconnected from the room')
+        })
+
+        // handle new video from other user in room
+        socket.on('new video', data => {
+            setVideo(data)
+        })
+
+        socket.io.on('reconnection_attempt', () => {
+            console.log("reconnection_attempt")
+        })
+
+        socket.io.on('reconnect', () => {
+            console.log("reconnect")
+        })
+
+        socket.on('connect', () => {
+            console.log('connect')
+        })
+
+        socket.on('disconnect', () => {
+            console.log('disconnect')
+        })
+
+        return () => {
+
+            socket.off('room joined')
+            socket.off('user connected')
+            socket.off('new video')
+
+            socket.emit('leave')
+        }
+    }, [])
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -143,6 +155,11 @@ const Watch = () => {
                 _video.hostname = new URL(_video.url[0]).hostname
 
                 setVideo(_video)
+
+                if(socket) {
+                    console.log('sending video to room')
+                    socket.emit('new video', _video)
+                }
 
             } catch(err) {
                 console.log(err)

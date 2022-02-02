@@ -8,7 +8,7 @@ import Modal from '../Modal/Modal'
 import Button from 'components/atoms/Button/Button'
 
 
-const ChooseUsername = ({ isOpen, handleCloseModal, handleRoomCreate }) => {
+const ChooseUsername = ({ isOpen, handleCloseModal, cb }) => {
 
     const [ username, setUsername ] = useState('')
 
@@ -16,20 +16,18 @@ const ChooseUsername = ({ isOpen, handleCloseModal, handleRoomCreate }) => {
 
         e.preventDefault()
 
-        console.log(e)
-
         handleCloseModal()
-        handleRoomCreate(username)
+        cb(username)
     }
 
     return(
         <Modal handleClose={handleCloseModal} isOpen={isOpen}>
-            <Title type='small'>Siemka</Title>
+            <Title type='small'>Tworzenie pokoju</Title>
 
             <form onSubmit={handleSubmit}>
 
                 <TextContent>
-                    <p>Aby przejść dalej musisz wybrać sobie tymczasową nazwę użytkownika</p>
+                    <p style={{textAlign: 'center'}}>Aby przejść dalej musisz wybrać tymczasową nazwę użytkownika</p>
                     <Input value={username} onChange={({target}) => setUsername(target.value)} width='100%'/>
                 </TextContent>
 

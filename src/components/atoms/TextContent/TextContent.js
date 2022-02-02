@@ -1,9 +1,9 @@
 import classnames from 'classnames'
 import style from './TextContent.module.scss'
 
-const TextContent = ({center, children}) => {
+const TextContent = ({center, children, ...rest}) => {
     return(
-        <div className={classnames(style.textContent, center && style.center)}>
+        <div {...rest} className={classnames(style.textContent, center && style.center)}>
             {children}
         </div>
     )

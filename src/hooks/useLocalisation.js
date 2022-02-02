@@ -56,6 +56,7 @@ const LocalisationProvider = ({ children }) => {
     useEffect(() => {
         console.log('getLang', getLang())
         setLang(getLang())
+        // eslint-disable-next-line
     }, [])
 
     return(

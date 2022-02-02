@@ -1,59 +1,56 @@
-import { useContext } from 'react'
 
-// components
+import ky from 'ky'
+
 import HomeTemplate from 'components/pages/HomeTemplate'
-import ChooseUsername from 'components/organisms/Modals/ChooseUsername'
+import TypeRoomId from 'components/organisms/Modals/TypeRoomId'
 
-// hooks
 import useLocalisation from 'hooks/useLocalisation'
-import useAuth from 'hooks/useAuth'
 import useModal from 'hooks/useModal'
+import useError from 'hooks/useError'
 
-// ctx
-import { withSocket, SocketContext } from 'context/RoomSocket'
 import { useHistory } from 'react-router'
 
 const Home = () => {
 
     const l = useLocalisation()
-    const auth = useAuth()
+    const handleError = useError()
+    // const auth = useAuth()
 
     const history = useHistory()
-    const socket = useContext(SocketContext)
+    const roomIdModal = useModal()
 
-    const { isOpen, handleCloseModal, handleOpenModal } = useModal()
+    const createRoom = async () => {
 
-    const handleRoomCreate = () => {
-        if(!auth.user)
-            handleOpenModal()
-        else createRoom()
-    }
+        try {
+            let response = await ky.get('/api/v1/room/generateId')
+            response = await response.json()
 
-    const createRoom = (username) => {
-        if(!auth.user && username)
-            localStorage.setItem('tempUsername', username)
-
-        if(!auth.user && !username)
-            return handleOpenModal()
-
-        socket.emit('get room id')
-        socket.on('room id', id => {
-            history.push(`/room/${id}`)
-        })
-    }
-
-    const handleRoomJoin = () => {
-        console.log('join')
+            if(response && response.id) {
+                history.push('/room/' + response.id)
+            } else {
+                alert('error')
+            }
+        } catch(err) {
+            if(err.name === 'HTTPError') {
+                const errCode = (await err.response.json()).err
+                handleError({statusCode: errCode})
+            }
+        }
 
     }
+
+    const joinRoom = (roomId) => new Promise((resolve, reject) => {
+        if(!roomId)
+            reject('No room ID')
+
+        history.push('/room/' + roomId)
+        resolve(true)
+    })
 
     const buttons = [
         {
             label: l('createNewRoom'),
-            onClick: handleRoomCreate
-        }, {
-            label: l('joinExistingRoom'),
-            onClick: handleRoomJoin
+            onClick: createRoom
         }
     ]
 
@@ -61,14 +58,23 @@ const Home = () => {
         <HomeTemplate
             buttons={buttons}
         >
-            {!auth.user &&
-            <ChooseUsername
-                isOpen={isOpen}
-                handleCloseModal={handleCloseModal}
-                handleRoomCreate={createRoom}
-            />}
+            {/* {!auth.user && !localStorage.getItem('tempUsername') &&
+                <ChooseUsername
+                    isOpen={usernameModal.isOpen}
+                    handleCloseModal={usernameModal.handleCloseModal}
+                    cb={handleUsername}
+                />
+            } */}
+
+            {
+                <TypeRoomId
+                    isOpen={roomIdModal.isOpen}
+                    handleCloseModal={roomIdModal.handleCloseModal}
+                    handleRoomJoin={joinRoom}
+                />
+            }
         </HomeTemplate>
     )
 }
 
-export default withSocket(Home)
+export default Home

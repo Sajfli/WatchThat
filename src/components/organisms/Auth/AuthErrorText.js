@@ -1,9 +1,12 @@
 import classnames from 'classnames'
+import useError from 'hooks/useError'
 
 // style
 import style from './Auth.module.scss'
 
 const ErrorText = ({mode='signUp', type, authError}) => {
+
+    const handleError = useError()
 
     if(mode === 'signIn') {
         if(authError)
@@ -15,14 +18,14 @@ const ErrorText = ({mode='signUp', type, authError}) => {
 
         else return null
     } else {
-        if(authError && authError.msg)
+        if(authError && authError.msg && authError.msg[type])
             return(
                 <div className={classnames(style.authError, style[mode])}>
                     {
                         mode === 'signIn' ?
                             <>Incorrect email or password!</>
                         :
-                            authError.msg[type]
+                            handleError({err: authError.msg[type], useToast: false})
                     }
                 </div>
             )

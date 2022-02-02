@@ -18,5 +18,10 @@
     "hello": "Witaj!",
     "youNeedToJoinARoom": "Żeby coś obejrzeć dołącz do pokoju.",
     "createNewRoom": "Stwórz nowy pokój",
-    "joinExistingRoom": "Dołącz do istniejącego"
+    "joinExistingRoom": "Używając linka od znajomego możesz dołączyć do istniejącego pokoju.",
+
+    "unspecifiedError": "Wystąpił nieokreślony błąd",
+    "http5xxError": "Wewnętrzny błąd serwera",
+    "databaseError": "Wystąpił błąd bazy danych",
+    "signInError": "Nieprawidłowy email lub hasło"
 }

@@ -18,9 +18,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import style from './Player.module.scss'
-import { socket } from 'context/RoomSocket'
+// import { socket } from 'context/RoomSocket'
+import useSocket from 'hooks/useSocket'
 
-const Player = ({video={}, playerContainer, ref}) => {
+const Player = ({video={}, playerContainer}) => {
 
     const [ playing, setPlaying ]               = useState(true)
     const [ muted, setMuted ]                   = useState(false)
@@ -30,16 +31,14 @@ const Player = ({video={}, playerContainer, ref}) => {
 
     const [ mouseMoving, setMouseMoving ]       = useState(true)
 
-    useEffect(() => {
-        ref.current = {  playing, progress }
-    }, [progress, playing])
-
     const handleFullScreen = useFullScreenHandle()
 
     const playerRef = useRef(null)
     const playCircleRef = useRef(null)
 
     const timer = useRef(null)
+
+    const socket = useSocket()
 
     const handleKey = e => {
 
@@ -82,7 +81,9 @@ const Player = ({video={}, playerContainer, ref}) => {
                     }
 
 
-                    seekTo(time)
+                    if(seekTo(time)) {
+                        sendChange('seek', time)
+                    }
 
                 break;
 
@@ -105,6 +106,8 @@ const Player = ({video={}, playerContainer, ref}) => {
 
         // SOCKET HANDLER
 
+        if(!socket || !socket.connected) return
+
         // seek
         socket.on('seek', seekTo)
 
@@ -118,12 +121,19 @@ const Player = ({video={}, playerContainer, ref}) => {
 
         })
 
+        socket.on('get video state', () => {
+            console.log('send video state')
+            if(Object.keys(video).length > 0)
+                socket.emit('send video state', { video, playing, progress })
+        })
+
         return () => {
             socket.off('seek')
             socket.off('playing')
+            socket.off('get video state')
         }
 
-    }, [playing])
+    }, [playing, progress, video, socket])
 
     const seekTo = t => {
         if(!playerRef.current) return false

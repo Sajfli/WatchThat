@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 const useError = () => {
     const l = useLocalisation()
 
-    return ({err, statusCode, useToast}) => {
+    return ({err, statusCode, useToast = true}) => {
 
         let msg
         if(err)

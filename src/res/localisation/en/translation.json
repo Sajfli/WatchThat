@@ -19,6 +19,7 @@
     "youNeedToJoinARoom": "To watch something you need to join a room.",
     "createNewRoom": "Create new room",
     "joinExistingRoom": "You can also join existing room using link from your friend.",
+    "invalidRoom": "This room doesn't exists",
 
     "unspecifiedError": "An undefined error has occured",
     "http5xxError": "Internal Server Error",

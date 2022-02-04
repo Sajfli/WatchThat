@@ -18,7 +18,8 @@
     "hello": "Witaj!",
     "youNeedToJoinARoom": "Żeby coś obejrzeć dołącz do pokoju.",
     "createNewRoom": "Stwórz nowy pokój",
-    "joinExistingRoom": "Używając linka od znajomego możesz dołączyć do istniejącego pokoju.",
+    "joinExistingRoom": "Używając linka od znajomego możesz dołączyć do istniejącego pokoju.",
+    "invalidRoom": "Ten pokój nie istnieje",
 
     "unspecifiedError": "Wystąpił nieokreślony błąd",
     "http5xxError": "Wewnętrzny błąd serwera",

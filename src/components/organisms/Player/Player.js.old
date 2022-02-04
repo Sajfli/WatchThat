@@ -33,14 +33,14 @@ const Player = ({video={}, playerContainer}) => {
 
     const [ containerWidth, setContainerWidth ] = useState(null)
 
-    const [ socket ] = useSocket()
-
     const handleFullScreen = useFullScreenHandle()
 
     const playerRef = useRef(null)
     const playCircleRef = useRef(null)
 
     const timer = useRef(null)
+
+    const socket = useSocket()
 
     const handleKey = e => {
 
@@ -108,32 +108,32 @@ const Player = ({video={}, playerContainer}) => {
 
         // SOCKET HANDLER
 
-        if(!socket) return
+        if(!socket || !socket.connected) return
 
         // seek
-        // socket.on('seek', seekTo)
+        socket.on('seek', seekTo)
 
         // pause / unpause
-        // socket.on('playing', ({playing: p}) => {
+        socket.on('playing', ({playing: p}) => {
 
-        //     if(p !== playing) {
-        //         setPlaying(p)
-        //     }
+            if(p !== playing) {
+                setPlaying(p)
+            }
 
 
-        // })
+        })
 
-        // socket.on('get video state', () => {
-        //     console.log('send video state')
-        //     if(Object.keys(video).length > 0)
-        //         socket.emit('send video state', { video, playing, progress })
-        // })
+        socket.on('get video state', () => {
+            console.log('send video state')
+            if(Object.keys(video).length > 0)
+                socket.emit('send video state', { video, playing, progress })
+        })
 
-        // return () => {
-        //     socket.off('seek')
-        //     socket.off('playing')
-        //     socket.off('get video state')
-        // }
+        return () => {
+            socket.off('seek')
+            socket.off('playing')
+            socket.off('get video state')
+        }
 
     }, [playing, progress, video, socket])
 
@@ -207,10 +207,10 @@ const Player = ({video={}, playerContainer}) => {
             case 'paused': case 'unpaused':
                 const _playing = action === 'unpaused'
 
-                // socket.emit('playing', { playing: _playing, progress })
+                socket.emit('playing', { playing: _playing, progress })
                 break
             case 'seek':
-                // socket.emit('seek', value)
+                socket.emit('seek', value)
             break
             default:
                 break

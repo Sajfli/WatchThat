@@ -78,7 +78,6 @@ const Watch = () => {
         socket.on('user connected', username => {
             console.log(username + ' connected to the room')
         })
-
         socket.on('user disconnected', username => {
             console.log(username + ' disconnected from the room')
         })

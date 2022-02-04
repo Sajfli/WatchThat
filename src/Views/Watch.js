@@ -108,30 +108,40 @@ const Watch = () => {
 
         if(!socket) return
 
+        // room actions
         socket.on('room_joined', () => {
             console.log('room_joined')
         })
 
         socket.on('room_not_joined', (reason) => {
+
+            // TODO: handle unauthorized reason
+
             if(reason === 'username') {
                 handleError({err: 'invalidUsername'})
                 localStorage.removeItem('tempUsername')
                 usernameModal.handleOpenModal()
             }
-
-
         })
 
         socket.on('room_invalid', () => {
-            console.log('room_invalid')
+            handleError({err: 'invalidRoom'})
+            history.push('/')
         })
 
         socket.on('room_error', () => {
             console.log('room_error')
         })
 
+        // users actions
         socket.on('user_joined', (username) => {
             console.log(`${username} joined the room`)
+        })
+
+        // video actions
+        socket.on('set video', ({video, username}) => {
+            console.log(`received new video from ${username}`)
+            setVideo(video)
         })
 
         return () => {
@@ -141,7 +151,7 @@ const Watch = () => {
             socket.off('user_joined')
         }
 
-    }, [socket])
+    }, [socket]) // eslint-disable-line
 
 
     const handleSubmit = async e => {
@@ -169,6 +179,12 @@ const Watch = () => {
                 _video.hostname = new URL(_video.url[0]).hostname
 
                 setVideo(_video)
+
+                if(socket) {
+                    console.log('sendind video to room')
+                    socket.emit('new video', _video)
+                }
+
 
             } catch(err) {
                 console.log(err)

@@ -29,7 +29,6 @@ const SocketProvider = ({children}) => {
                     token
                 }
 
-                console.log(auth)
                 setUserId(auth.user._id)
             }
         }

@@ -152,7 +152,7 @@ const Player = ({video={}, playerContainer}) => {
 
         return () => window.removeEventListener('resize', updateWidth)
 
-    }, [])
+    }, [playerContainer])
 
     const seekTo = t => {
         if(!playerRef.current) return false

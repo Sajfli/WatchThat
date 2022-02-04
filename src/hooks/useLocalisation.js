@@ -19,6 +19,7 @@ const LocalisationProvider = ({ children }) => {
         if(!_lang) {
             try {
                 let browserLang = navigator.language.split('-')[0]
+
                 if(browserLang)
                     _lang = browserLang
                 else throw Error()
@@ -54,7 +55,7 @@ const LocalisationProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        console.log('getLang', getLang())
+        // console.log('getLang', getLang())
         setLang(getLang())
         // eslint-disable-next-line
     }, [])

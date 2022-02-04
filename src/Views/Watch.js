@@ -12,6 +12,7 @@ import isURL from 'validator/lib/isURL'
 import useLocalisation from 'hooks/useLocalisation'
 import useModal from 'hooks/useModal'
 import useAuthModal from 'hooks/useAuthModal'
+import useError from 'hooks/useError'
 
 // UI components
 import Player from 'components/organisms/Player/Player'
@@ -37,6 +38,8 @@ const Watch = () => {
     const [ socket, socketUserId, initSocket ] = useSocket()
 
     const auth = useAuth()
+
+    const handleError = useError()
 
     // video data
     const [ video, setVideo ] = useState({})
@@ -107,6 +110,16 @@ const Watch = () => {
 
         socket.on('room_joined', () => {
             console.log('room_joined')
+        })
+
+        socket.on('room_not_joined', (reason) => {
+            if(reason === 'username') {
+                handleError({err: 'invalidUsername'})
+                localStorage.removeItem('tempUsername')
+                usernameModal.handleOpenModal()
+            }
+
+
         })
 
         socket.on('room_invalid', () => {

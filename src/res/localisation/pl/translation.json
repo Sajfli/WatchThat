@@ -23,5 +23,14 @@
     "unspecifiedError": "Wystąpił nieokreślony błąd",
     "http5xxError": "Wewnętrzny błąd serwera",
     "databaseError": "Wystąpił błąd bazy danych",
-    "signInError": "Nieprawidłowy email lub hasło"
+    "signInError": "Nieprawidłowy email lub hasło",
+
+    "noUsernameError": "Brak nazwy użytkownika",
+    "invalidUsernameLengthError": "Nazwa użytkownika powinna mieć od 3 do 20 znaków",
+    "usernameAlphanumericError": "Nazwa użytkownika musi być alfanumeryczna",
+    "noEmailError": "Brak adresu email",
+    "invalidEmailFormatError": "Zły format adresu email",
+    "emailTakenError": "Ten email jest zajęty",
+    "noPasswordError": "Brak hasła",
+    "invalidPasswordLengthError": "Hasło powinno składać się z co najmniej 6 znaków"
 }

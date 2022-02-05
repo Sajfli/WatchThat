@@ -1,6 +1,7 @@
 import {
     Switch,
-    Route
+    Route,
+    Redirect
 } from 'react-router-dom'
 
 import { Watch, Home } from '../Views'
@@ -18,6 +19,10 @@ const Router = () => {
 
             <Route exact path={['/room/:id', '/room*']}>
                 <Watch />
+            </Route>
+
+            <Route math="*">
+                <Redirect to="/" />
             </Route>
 
         </Switch>

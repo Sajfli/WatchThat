@@ -18,7 +18,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import style from './Player.module.scss'
-// import { socket } from 'context/RoomSocket'
 import useSocket from 'hooks/useSocket'
 
 const Player = ({video={}, playerContainer}) => {
@@ -32,6 +31,8 @@ const Player = ({video={}, playerContainer}) => {
     const [ mouseMoving, setMouseMoving ]       = useState(true)
 
     const [ containerWidth, setContainerWidth ] = useState(null)
+
+    const [ receivedTimestamp, setReceivedTimestamp ] = useState(null)
 
     const [ socket ] = useSocket()
 
@@ -50,8 +51,8 @@ const Player = ({video={}, playerContainer}) => {
             case actionKey.pause: case actionKey.spacebar:
 
                 if(!playing)
-                    handlePlay()
-                else handlePause()
+                    handlePlay(true)
+                else handlePause(true)
 
                 break
 
@@ -110,32 +111,44 @@ const Player = ({video={}, playerContainer}) => {
 
         if(!socket) return
 
+        // pause and play
+        socket.on('playing state', ({state, username}) => {
+            console.log(`${username} ${state ? 'played' : 'paused'} video`)
+
+            setPlaying(state)
+        })
+
         // seek
-        // socket.on('seek', seekTo)
+        socket.on('seek', seekTo)
 
-        // pause / unpause
-        // socket.on('playing', ({playing: p}) => {
+        // send state to new user
+        socket.on('get video state', target => {
+            if(Object.keys(video).length > 0)
+                socket.emit('send video state', {
+                    playing, progress: progress/100,
+                    target, timestamp: Date.now()
+                })
+        })
 
-        //     if(p !== playing) {
-        //         setPlaying(p)
-        //     }
+        // get video state
+        socket.on('set video state', ({playing, progress, timestamp}) => {
+            console.log('received state')
+            if(timestamp < receivedTimestamp) return
+            setReceivedTimestamp(timestamp)
 
+            seekTo(progress)
+            if(playing)
+                handlePlay(false)
+            else handlePause(false)
+        })
 
-        // })
+        return () => {
+            socket.off('playing state')
+            socket.off('seek')
+            socket.off('get video state')
+        }
 
-        // socket.on('get video state', () => {
-        //     console.log('send video state')
-        //     if(Object.keys(video).length > 0)
-        //         socket.emit('send video state', { video, playing, progress })
-        // })
-
-        // return () => {
-        //     socket.off('seek')
-        //     socket.off('playing')
-        //     socket.off('get video state')
-        // }
-
-    }, [playing, progress, video, socket])
+    }, [socket, playing, progress, video, receivedTimestamp]) // eslint-disable-line
 
     // container width
     useEffect(() => {
@@ -167,7 +180,9 @@ const Player = ({video={}, playerContainer}) => {
 
         if(target.tagName && (target.tagName === 'VIDEO' || datasetCond)) {
 
-            setPlaying(!playing)
+            if(playing)
+                handlePause(true)
+            else handlePlay(true)
 
             if(playCircleRef.current) {
 
@@ -207,10 +222,11 @@ const Player = ({video={}, playerContainer}) => {
             case 'paused': case 'unpaused':
                 const _playing = action === 'unpaused'
 
-                // socket.emit('playing', { playing: _playing, progress })
+                socket.emit('playing state', _playing)
+
                 break
             case 'seek':
-                // socket.emit('seek', value)
+                socket.emit('seek', value)
             break
             default:
                 break
@@ -218,14 +234,20 @@ const Player = ({video={}, playerContainer}) => {
 
     }
 
-    const handlePlay = () => {
+    const handlePlay = (isLocal) => {
+
         if(!playing) setPlaying(true)
-        sendChange('unpaused')
+
+        if(isLocal)
+            sendChange('unpaused')
     }
 
-    const handlePause = () => {
+    const handlePause = (isLocal) => {
+
         if(playing) setPlaying(false)
-        sendChange('paused')
+
+        if(isLocal)
+            sendChange('paused')
     }
 
     const

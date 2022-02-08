@@ -31,26 +31,30 @@ import style from './Watch.module.scss'
 const Watch = () => {
 
     const l = useLocalisation()
-    const playerContainer = useRef(null)
 
-    const history = useHistory()
-    const params = useParams()
+    const playerContainer       = useRef(null)
+    const membersRef            = useRef(null)
 
-    const usernameModal = useModal()
-    const [ isAuthModalOpen ] = useAuthModal()
+    const history               = useHistory()
+    const params                = useParams()
+
+    const usernameModal         = useModal()
+    const [ isAuthModalOpen ]   = useAuthModal()
+
+    const auth                  = useAuth()
+
+    const handleError           = useError()
+
+    const [ video, setVideo ]   = useState({})
+    const [ currentRoom, setCurrentRoom ] = useState(null)
+    const [ search, setSearch ] = useState('')
+
+    const [ areMembersWrapped, setAreMembersWrapped ] = useState(false)
+    const [ minUnwrappedWidth, setMinUnwrappedWidth ] = useState(1200)
+
+    const [ members, setMembers ] = useState([])
 
     const [ socket, socketUserId, initSocket ] = useSocket()
-
-    const auth = useAuth()
-
-    const handleError = useError()
-
-    // video data
-    const [ video, setVideo ] = useState({})
-    const [ currentRoom, setCurrentRoom ] = useState(null)
-
-    // text input value
-    const [ search, setSearch ] = useState('')
 
     const username = auth.user ? auth.user.username : localStorage.getItem('tempUsername')
 
@@ -138,8 +142,11 @@ const Watch = () => {
         })
 
         // users actions
-        socket.on('user_joined', (username) => {
-            console.log(`${username} joined the room`)
+        socket.on('user_joined', (params) => {
+            console.log(`${params.username} joined the room`, params)
+            const _members = [...members] || []
+            _members.push(params)
+            setMembers(_members)
         })
 
         // video actions
@@ -156,6 +163,54 @@ const Watch = () => {
         }
 
     }, [socket]) // eslint-disable-line
+
+
+    useEffect(() => {
+
+        if(!membersRef.current || !playerContainer.current) return
+
+        let timeout = null
+
+        const compare = () => {
+
+            clearTimeout(timeout)
+
+            const getY = el => {
+                let pos = 0
+
+                while(el) {
+                    pos += (el.offsetTop - el.scrollTop + el.clientTop)
+                    el = el.offsetParent
+                }
+
+                return pos
+            }
+
+            const
+                members = membersRef.current,
+                player = playerContainer.current
+
+            if(getY(members) !== getY(player)) {
+                if((window.innerWidth >= minUnwrappedWidth) && !!minUnwrappedWidth)
+                    setAreMembersWrapped(false)
+                else setAreMembersWrapped(true)
+            } else {
+                if(window.innerWidth < minUnwrappedWidth || !minUnwrappedWidth)
+                    setMinUnwrappedWidth(window.innerWidth)
+                setAreMembersWrapped(false)
+            }
+        }
+
+        window.addEventListener('resize', compare)
+
+        timeout = setTimeout(compare, 20)
+
+        return () => {
+            window.removeEventListener('resize', compare)
+            clearTimeout(timeout)
+        }
+
+    }, [membersRef, playerContainer, minUnwrappedWidth])
 
 
     const handleSubmit = async e => {
@@ -200,9 +255,9 @@ const Watch = () => {
     }
 
     return(
-        <div className={classnames(style.Watch)}>
+        <div className={classnames(style.Watch, areMembersWrapped && style.membersWrapped)}>
 
-            <RoomControls />
+            <RoomControls playerContainer={playerContainer} />
             <div ref={playerContainer} className={style.container}>
 
                 {!username &&
@@ -229,7 +284,12 @@ const Watch = () => {
                 </div>
 
             </div>
-            <RoomMembers playerContainer={playerContainer} />
+            <RoomMembers
+                playerContainer={playerContainer}
+                forwardRef={membersRef}
+                wrapped={areMembersWrapped}
+                members={members}
+            />
         </div>
     )
 

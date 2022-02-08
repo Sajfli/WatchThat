@@ -1,7 +1,13 @@
+@import 'utils/master';
+
 .roomMembers {
-    background-color: red;
+    background-color: $shade-color;
 
     width: 300px;
     min-height: fit-content;
     height: var(--height);
+
+    &.wrapped {
+        width: var(--width);
+    }
 }

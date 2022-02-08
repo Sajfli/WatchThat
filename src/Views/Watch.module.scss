@@ -12,13 +12,16 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
+    flex-wrap: wrap;
+
+    &.membersWrapped {
+        padding-top: 75px;
+    }
 }
 
 .playerBox {
     width: max-content;
     height: fit-content;
-
-    background-color: blue;
 }
 
 .input {
@@ -26,10 +29,8 @@
 }
 
 .container {
-    width: 100%;
-    // max-width: 100%;
+    width: $player-width;
+    max-width: 100%;
     display: flex;
     justify-content: center;
-
-    background-color: green;
 }

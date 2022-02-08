@@ -4,7 +4,7 @@ $controls-height: 50px;
 
 .playerContainer {
 
-    --player-width: 800px;
+    --player-width: #{$player-width};
     --max-width: 100%;
 
     width: var(--player-width);

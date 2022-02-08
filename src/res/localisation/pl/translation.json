@@ -14,6 +14,8 @@
     "signIn": "Zaloguj się",
     "signUp": "Zarejestruj się",
 
+    "inviteClipboard": "Adres pokoju został skopiowany do schowka",
+    "inviteClipboardError": "Nie udało się skopiować adresu pokoju",
 
     "hello": "Witaj!",
     "youNeedToJoinARoom": "Żeby coś obejrzeć dołącz do pokoju.",

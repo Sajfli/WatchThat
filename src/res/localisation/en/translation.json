@@ -14,6 +14,9 @@
     "signIn": "Sign In",
     "signUp": "Sign Up",
 
+    "inviteClipboard": "The room url has been copied to the clipboard",
+    "inviteClipboardError": "The room url cloudn't be copied to the clipboard",
+
 
     "hello": "Hello!",
     "youNeedToJoinARoom": "To watch something you need to join a room.",

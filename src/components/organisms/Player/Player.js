@@ -6,7 +6,7 @@ import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { keys as defKeys } from 'config/defaultUser'
+import defUser from 'config/defaultUser'
 
 import useKeyHandle from 'hooks/useKeyHandle'
 
@@ -45,7 +45,7 @@ const Player = ({video={}, playerContainer}) => {
 
     const handleKey = e => {
 
-        const actionKey = defKeys
+        const actionKey = defUser.keys
 
         switch(e.key) {
             case actionKey.pause: case actionKey.spacebar:
@@ -103,7 +103,7 @@ const Player = ({video={}, playerContainer}) => {
     }
 
     // defKeys is settings' array with keys and actions
-    useKeyHandle(Object.values(defKeys), handleKey)
+    useKeyHandle(Object.values(defUser.keys), handleKey)
 
     useEffect(() => {
 
@@ -154,6 +154,8 @@ const Player = ({video={}, playerContainer}) => {
     useEffect(() => {
         const updateWidth = () => {
             if(!playerContainer.current) return
+            if(!typeof playerContainer.current.offsetWidth === 'number')
+                return
 
             setContainerWidth(playerContainer.current.offsetWidth)
 
@@ -266,7 +268,7 @@ const Player = ({video={}, playerContainer}) => {
                 moveControls && style.moveControls,
                 handleFullScreen.active && style.fullscreen
             )}
-            style={containerWidth && {'--max-width': containerWidth + 'px'}}
+            style={(containerWidth && typeof containerWidth === 'number') ? {'--max-width': containerWidth + 'px'} : {}}
 
             tabIndex='0'
         >

@@ -1,10 +1,8 @@
 import socketio from 'socket.io-client'
-import { SOCKET_URL, SOCKET_PATH } from 'config/app'
+import config from 'config/app'
 import React, { useContext, useState } from 'react'
 
 const SocketContext = React.createContext()
-
-// const socket = socketio.connect(SOCKET_URL, { path: SOCKET_PATH, autoConnect: true })
 
 const SocketProvider = ({children}) => {
 
@@ -15,7 +13,7 @@ const SocketProvider = ({children}) => {
     const initSocket = (auth) => {
 
         const options = {
-            path: SOCKET_PATH,
+            path: config.SOCKET_PATH,
             autoConnect: true,
         }
 
@@ -33,7 +31,7 @@ const SocketProvider = ({children}) => {
             }
         }
 
-        const conn = socketio.connect(SOCKET_URL, options)
+        const conn = socketio.connect(config.SOCKET_URL, options)
 
         setSocket(conn)
     }

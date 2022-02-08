@@ -9,7 +9,7 @@ import { Watch, Home } from '../Views'
 const Router = () => {
     return(
 
-    <div className='View'>
+    // <div className='View'>
 
         <Switch>
 
@@ -17,7 +17,7 @@ const Router = () => {
                 <Home />
             </Route>
 
-            <Route exact path={['/room/:id', '/room*']}>
+            <Route exact path={'/room/:id*'}>
                 <Watch />
             </Route>
 
@@ -27,7 +27,7 @@ const Router = () => {
 
         </Switch>
 
-    </div>
+    /* </div> */
 
     )
 }

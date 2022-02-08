@@ -1,6 +1,24 @@
+@import "utils/master";
+
+.Watch {
+    // background-color: blue;
+    // width: max-content;
+    // height: fit-content;
+    position: relative;
+
+    width: calc(100vw - #{$sidebar-width});
+    min-height: calc(100vh - #{$footer-height});
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
 .playerBox {
     width: max-content;
     height: fit-content;
+
+    background-color: blue;
 }
 
 .input {
@@ -9,6 +27,9 @@
 
 .container {
     width: 100%;
+    // max-width: 100%;
     display: flex;
     justify-content: center;
+
+    background-color: green;
 }

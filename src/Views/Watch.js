@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
+import { useHistory, useParams } from 'react-router'
 import ky from 'ky'
 import URL from 'url-parse'
+import classnames from 'classnames'
 
 
 import useSocket from 'hooks/useSocket'
@@ -13,16 +15,18 @@ import useLocalisation from 'hooks/useLocalisation'
 import useModal from 'hooks/useModal'
 import useAuthModal from 'hooks/useAuthModal'
 import useError from 'hooks/useError'
+import useAuth from 'hooks/useAuth'
 
 // UI components
 import Player from 'components/organisms/Player/Player'
 import TextInput from 'components/atoms/Input/Input'
 import ChooseUsername from 'components/organisms/Modals/ChooseUsername'
+import RoomControls from 'components/organisms/RoomControls/RoomControls'
+import RoomMembers from 'components/organisms/RoomMembers/RoomMembers'
 
 // style
 import style from './Watch.module.scss'
-import { useHistory, useParams } from 'react-router'
-import useAuth from 'hooks/useAuth'
+
 
 const Watch = () => {
 
@@ -196,31 +200,36 @@ const Watch = () => {
     }
 
     return(
-        <div ref={playerContainer} className={style.container}>
+        <div className={classnames(style.Watch)}>
 
-            {!username &&
-                <ChooseUsername
-                    isOpen={usernameModal.isOpen}
-                    handleCloseModal={usernameModal.handleCloseModal}
-                    cb={(...params) => {console.log(...params)}}
-                />
-            }
+            <RoomControls />
+            <div ref={playerContainer} className={style.container}>
 
-            <div className={style.playerBox}>
-                <form onSubmit={handleSubmit}>
-                    <TextInput
-                        width='100%' height='40px'
-                        className={style.input}
-                        placeholder={l('typeVideoUrl')}
-
-                        value={search}
-                        onChange={({target: {value}}) => setSearch(value)}
+                {!username &&
+                    <ChooseUsername
+                        isOpen={usernameModal.isOpen}
+                        handleCloseModal={usernameModal.handleCloseModal}
+                        cb={(...params) => {console.log(...params)}}
                     />
-                </form>
+                }
 
-                <Player video={video} playerContainer={playerContainer} socket={socket} />
+                <div className={style.playerBox}>
+                    <form onSubmit={handleSubmit}>
+                        <TextInput
+                            width='100%' height='40px'
+                            className={style.input}
+                            placeholder={l('typeVideoUrl')}
+
+                            value={search}
+                            onChange={({target: {value}}) => setSearch(value)}
+                        />
+                    </form>
+
+                    <Player video={video} playerContainer={playerContainer} socket={socket} />
+                </div>
+
             </div>
-
+            <RoomMembers playerContainer={playerContainer} />
         </div>
     )
 

@@ -1,0 +1,24 @@
+@import 'utils/master';
+
+@mixin btn($btn-size, $btn-border-radius, $btn-font-size, $btn-hover-alpha: .05) {
+    text-align: center;
+    cursor: pointer;
+
+    font-size: $btn-font-size;
+
+    width: $btn-size;
+    height: $btn-size;
+    line-height: $btn-size;
+
+    text-align: center;
+    color: #d3d3d3;
+
+    border-radius: $btn-border-radius;
+
+    transition: all .2s;
+
+    &:hover {
+        color: #fff;
+        background-color: rgba(255, 255, 255, $btn-hover-alpha);
+    }
+}

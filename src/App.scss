@@ -7,6 +7,12 @@
 body {
     background-color: $bg-color;
     color: #efefef;
+
+    --global-border-radius: #{$global-border-radius};
+}
+
+.App {
+    padding-left: $sidebar-width;
 }
 
 .link {
@@ -24,6 +30,12 @@ body {
     min-height: calc(100vh - #{$footer-height});
     // min-height: calc(100vh - #{$header-height} - #{$footer-height});
 
+}
+
+.flexCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .linkFill {

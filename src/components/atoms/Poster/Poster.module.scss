@@ -1,6 +1,7 @@
 .poster {
     width: 400px;
-    height: 800px;
+    // height: 800px;
+    max-height: 100vh;
 
     overflow: hidden;
 }

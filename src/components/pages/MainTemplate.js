@@ -2,16 +2,19 @@
 import SideBar from 'components/organisms/SideBar/SideBar'
 import Modal from 'components/organisms/Modal/Modal'
 import AuthComponent from 'components/organisms/Auth/Auth'
+import Toasts from 'components/molecules/Toasts/Toasts'
 
 // hooks
-import useModal from 'hooks/useModal'
+import useAuthModal from 'hooks/useAuthModal'
 
 const MainTemplate = ({children}) => {
 
-    const { isOpen, handleOpenModal, handleCloseModal } = useModal()
+    const [ isOpen, handleOpenModal, handleCloseModal ] = useAuthModal()
 
     return(
         <div className='App'>
+
+            <Toasts />
 
             <SideBar authPopupCallback={handleOpenModal} />
 

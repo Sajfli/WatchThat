@@ -7,6 +7,7 @@ import SignInForm from './SignInForm'
 // hooks
 import useLocalisation from 'hooks/useLocalisation'
 import useAuth from 'hooks/useAuth'
+import useError from 'hooks/useError'
 
 
 const Auth = ({authPopupCallback}) => {
@@ -16,6 +17,8 @@ const Auth = ({authPopupCallback}) => {
     const [ waiting, setWaiting ] = useState(false)
     const [ register, setRegister ] = useState(false)
     const [ authError, setAuthError ] = useState(null)
+
+    const handleError = useError()
 
     const auth = useAuth()
 
@@ -38,9 +41,40 @@ const Auth = ({authPopupCallback}) => {
         setWaiting(true)
 
         if(register) {
-            auth.signUp({...data}, authPopupCallback)
+            auth.signUp({...data}, async (error) => {
+                if(!error)
+                    authPopupCallback()
+                if(typeof error === 'object')
+                    try {
+                        const response = await error.json()
+
+                        if(response.err) {
+                            const errors = {}
+                            response.err.forEach((e) => {
+                                const key = Object.keys(e)[0]
+                                errors[key] = e[key]
+                            })
+                            console.log(errors)
+                            setAuthError({msg: errors})
+                        }
+                        else throw Error('noErrorMsg')
+
+                    } catch(err) {
+                        handleError()
+                        console.log('wrrr', err)
+                    }
+
+                setWaiting(false)
+            })
         } else {
-            auth.signIn({...data}, authPopupCallback)
+            auth.signIn({...data}, (error) => {
+                if(error === 1)
+                    setAuthError(true)
+                else if (!error)
+                    authPopupCallback()
+
+                setWaiting(false)
+            })
         }
 
 

@@ -1,35 +1,56 @@
-// components
-import HomeTemplate from 'components/pages/HomeTemplate'
-import ChooseUsername from 'components/organisms/Modals/ChooseUsername'
 
-// hooks
+import ky from 'ky'
+
+import HomeTemplate from 'components/pages/HomeTemplate'
+import TypeRoomId from 'components/organisms/Modals/TypeRoomId'
+
 import useLocalisation from 'hooks/useLocalisation'
-import useAuth from 'hooks/useAuth'
 import useModal from 'hooks/useModal'
+import useError from 'hooks/useError'
+
+import { useHistory } from 'react-router'
 
 const Home = () => {
 
     const l = useLocalisation()
-    const auth = useAuth()
+    const handleError = useError()
+    // const auth = useAuth()
 
-    const { isOpen, handleCloseModal, handleOpenModal } = useModal()
+    const history = useHistory()
+    const roomIdModal = useModal()
 
-    const handleRoomCreate = () => {
-        if(!auth.user)
-            handleOpenModal()
+    const createRoom = async () => {
+
+        try {
+            let response = await ky.get('/api/v1/room/generateId')
+            response = await response.json()
+
+            if(response && response.id) {
+                history.push('/room/' + response.id)
+            } else {
+                alert('error')
+            }
+        } catch(err) {
+            if(err.name === 'HTTPError') {
+                const errCode = (await err.response.json()).err
+                handleError({statusCode: errCode})
+            }
+        }
+
     }
 
-    const handleRoomJoin = () => {
-        console.log('join')
-    }
+    const joinRoom = (roomId) => new Promise((resolve, reject) => {
+        if(!roomId)
+            reject('No room ID')
+
+        history.push('/room/' + roomId)
+        resolve(true)
+    })
 
     const buttons = [
         {
             label: l('createNewRoom'),
-            onClick: handleRoomCreate
-        }, {
-            label: l('joinExistingRoom'),
-            onClick: handleRoomJoin
+            onClick: createRoom
         }
     ]
 
@@ -37,7 +58,21 @@ const Home = () => {
         <HomeTemplate
             buttons={buttons}
         >
-            {!auth.user &&  <ChooseUsername isOpen={isOpen} handleCloseModal={handleCloseModal} />}
+            {/* {!auth.user && !localStorage.getItem('tempUsername') &&
+                <ChooseUsername
+                    isOpen={usernameModal.isOpen}
+                    handleCloseModal={usernameModal.handleCloseModal}
+                    cb={handleUsername}
+                />
+            } */}
+
+            {
+                <TypeRoomId
+                    isOpen={roomIdModal.isOpen}
+                    handleCloseModal={roomIdModal.handleCloseModal}
+                    handleRoomJoin={joinRoom}
+                />
+            }
         </HomeTemplate>
     )
 }

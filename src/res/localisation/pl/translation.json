@@ -14,9 +14,26 @@
     "signIn": "Zaloguj się",
     "signUp": "Zarejestruj się",
 
+    "inviteClipboard": "Adres pokoju został skopiowany do schowka",
+    "inviteClipboardError": "Nie udało się skopiować adresu pokoju",
 
     "hello": "Witaj!",
     "youNeedToJoinARoom": "Żeby coś obejrzeć dołącz do pokoju.",
     "createNewRoom": "Stwórz nowy pokój",
-    "joinExistingRoom": "Dołącz do istniejącego"
+    "joinExistingRoom": "Używając linka od znajomego możesz dołączyć do istniejącego pokoju.",
+    "invalidRoom": "Ten pokój nie istnieje",
+
+    "unspecifiedError": "Wystąpił nieokreślony błąd",
+    "http5xxError": "Wewnętrzny błąd serwera",
+    "databaseError": "Wystąpił błąd bazy danych",
+    "signInError": "Nieprawidłowy email lub hasło",
+
+    "noUsernameError": "Brak nazwy użytkownika",
+    "invalidUsernameLengthError": "Nazwa użytkownika powinna mieć od 3 do 20 znaków",
+    "usernameAlphanumericError": "Nazwa użytkownika musi być alfanumeryczna",
+    "noEmailError": "Brak adresu email",
+    "invalidEmailFormatError": "Zły format adresu email",
+    "emailTakenError": "Ten email jest zajęty",
+    "noPasswordError": "Brak hasła",
+    "invalidPasswordLengthError": "Hasło powinno składać się z co najmniej 6 znaków"
 }

@@ -14,9 +14,27 @@
     "signIn": "Sign In",
     "signUp": "Sign Up",
 
+    "inviteClipboard": "The room url has been copied to the clipboard",
+    "inviteClipboardError": "The room url cloudn't be copied to the clipboard",
+
 
     "hello": "Hello!",
     "youNeedToJoinARoom": "To watch something you need to join a room.",
     "createNewRoom": "Create new room",
-    "joinExistingRoom": "Join an existing room"
+    "joinExistingRoom": "You can also join existing room using link from your friend.",
+    "invalidRoom": "This room doesn't exists",
+
+    "unspecifiedError": "An undefined error has occured",
+    "http5xxError": "Internal Server Error",
+    "databaseError": "Database Error",
+    "signInError": "Invalid email or password",
+
+    "noUsernameError": "No username",
+    "invalidUsernameLengthError": "Username should have 3-20 characters",
+    "usernameAlphanumericError": "Username can only use letters, numbers and underscores",
+    "noEmailError": "No email address",
+    "invalidEmailFormatError": "Invalid email format",
+    "emailTakenError": "This email address is taken",
+    "noPasswordError": "No password",
+    "invalidPasswordLengthError": "Password should have at least 6 characters"
 }

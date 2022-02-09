@@ -6,7 +6,7 @@ import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { keys as defKeys } from 'config/defaultUser'
+import defUser from 'config/defaultUser'
 
 import useKeyHandle from 'hooks/useKeyHandle'
 
@@ -18,7 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import style from './Player.module.scss'
-import { socket } from 'context/RoomSocket'
+import useSocket from 'hooks/useSocket'
 
 const Player = ({video={}, playerContainer}) => {
 
@@ -30,6 +30,12 @@ const Player = ({video={}, playerContainer}) => {
 
     const [ mouseMoving, setMouseMoving ]       = useState(true)
 
+    const [ containerWidth, setContainerWidth ] = useState(null)
+
+    const [ receivedTimestamp, setReceivedTimestamp ] = useState(null)
+
+    const [ socket ] = useSocket()
+
     const handleFullScreen = useFullScreenHandle()
 
     const playerRef = useRef(null)
@@ -39,14 +45,14 @@ const Player = ({video={}, playerContainer}) => {
 
     const handleKey = e => {
 
-        const actionKey = defKeys
+        const actionKey = defUser.keys
 
         switch(e.key) {
             case actionKey.pause: case actionKey.spacebar:
 
                 if(!playing)
-                    handlePlay()
-                else handlePause()
+                    handlePlay(true)
+                else handlePause(true)
 
                 break
 
@@ -78,7 +84,9 @@ const Player = ({video={}, playerContainer}) => {
                     }
 
 
-                    seekTo(time)
+                    if(seekTo(time)) {
+                        sendChange('seek', time)
+                    }
 
                 break;
 
@@ -95,31 +103,71 @@ const Player = ({video={}, playerContainer}) => {
     }
 
     // defKeys is settings' array with keys and actions
-    useKeyHandle(Object.values(defKeys), handleKey)
+    useKeyHandle(Object.values(defUser.keys), handleKey)
 
     useEffect(() => {
 
         // SOCKET HANDLER
 
+        if(!socket) return
+
+        // pause and play
+        socket.on('playing state', ({state, username}) => {
+            console.log(`${username} ${state ? 'played' : 'paused'} video`)
+
+            setPlaying(state)
+        })
+
         // seek
         socket.on('seek', seekTo)
 
-        // pause / unpause
-        socket.on('playing', ({playing: p}) => {
+        // send state to new user
+        socket.on('get video state', target => {
+            if(Object.keys(video).length > 0)
+                socket.emit('send video state', {
+                    playing, progress: progress/100,
+                    target, timestamp: Date.now()
+                })
+        })
 
-            if(p !== playing) {
-                setPlaying(p)
-            }
+        // get video state
+        socket.on('set video state', ({playing, progress, timestamp}) => {
+            console.log('received state')
+            if(timestamp < receivedTimestamp) return
+            setReceivedTimestamp(timestamp)
 
-
+            seekTo(progress)
+            if(playing)
+                handlePlay(false)
+            else handlePause(false)
         })
 
         return () => {
+            socket.off('playing state')
             socket.off('seek')
-            socket.off('playing')
+            socket.off('get video state')
         }
 
-    }, [playing])
+    }, [socket, playing, progress, video, receivedTimestamp]) // eslint-disable-line
+
+    // container width
+    useEffect(() => {
+        const updateWidth = () => {
+            if(!playerContainer.current) return
+            if(!typeof playerContainer.current.offsetWidth === 'number')
+                return
+
+            setContainerWidth(playerContainer.current.offsetWidth)
+
+        }
+
+        updateWidth()
+
+        window.addEventListener('resize', updateWidth)
+
+        return () => window.removeEventListener('resize', updateWidth)
+
+    }, [playerContainer])
 
     const seekTo = t => {
         if(!playerRef.current) return false
@@ -134,7 +182,9 @@ const Player = ({video={}, playerContainer}) => {
 
         if(target.tagName && (target.tagName === 'VIDEO' || datasetCond)) {
 
-            setPlaying(!playing)
+            if(playing)
+                handlePause(true)
+            else handlePlay(true)
 
             if(playCircleRef.current) {
 
@@ -174,7 +224,8 @@ const Player = ({video={}, playerContainer}) => {
             case 'paused': case 'unpaused':
                 const _playing = action === 'unpaused'
 
-                socket.emit('playing', { playing: _playing, progress })
+                socket.emit('playing state', _playing)
+
                 break
             case 'seek':
                 socket.emit('seek', value)
@@ -185,22 +236,26 @@ const Player = ({video={}, playerContainer}) => {
 
     }
 
-    const handlePlay = () => {
+    const handlePlay = (isLocal) => {
+
         if(!playing) setPlaying(true)
-        sendChange('unpaused')
+
+        if(isLocal)
+            sendChange('unpaused')
     }
 
-    const handlePause = () => {
+    const handlePause = (isLocal) => {
+
         if(playing) setPlaying(false)
-        sendChange('paused')
+
+        if(isLocal)
+            sendChange('paused')
     }
 
     const
         url = video.url || [],
         title = video.title || null,
         indirect = video.indirect || false
-
-    const containerWidth = playerContainer.current ? playerContainer.current.offsetWidth : null
 
     // if it's a youtube player move contols under youtube iframe
     const moveControls = /youtu.*be/gi.test(video.hostname)
@@ -213,7 +268,7 @@ const Player = ({video={}, playerContainer}) => {
                 moveControls && style.moveControls,
                 handleFullScreen.active && style.fullscreen
             )}
-            style={containerWidth && {'--max-width': containerWidth + 'px'}}
+            style={(containerWidth && typeof containerWidth === 'number') ? {'--max-width': containerWidth + 'px'} : {}}
 
             tabIndex='0'
         >

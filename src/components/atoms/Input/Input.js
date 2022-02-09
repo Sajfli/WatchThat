@@ -32,8 +32,8 @@ const Input = ({width = 160, height = 40, className, inputClassName, type = 'tex
 }
 
 Input.propTypes = {
-    width: PropTypes.string.isRequired,
-    height: PropTypes.string.isRequired,
+    width: PropTypes.string,
+    height: PropTypes.string,
 
     className: PropTypes.string,
     inputClassName: PropTypes.string,

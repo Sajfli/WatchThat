@@ -7,6 +7,12 @@
 body {
     background-color: $bg-color;
     color: #efefef;
+
+    --global-border-radius: #{$global-border-radius};
+}
+
+.App {
+    padding-left: $sidebar-width;
 }
 
 .link {
@@ -26,7 +32,17 @@ body {
 
 }
 
+.flexCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .linkFill {
     text-decoration: none;
     display: block; width: 100%; height: 100%;
+}
+
+.textCenter {
+    text-align: center;
 }

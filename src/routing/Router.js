@@ -1,6 +1,7 @@
 import {
     Switch,
-    Route
+    Route,
+    Redirect
 } from 'react-router-dom'
 
 import { Watch, Home } from '../Views'
@@ -8,7 +9,7 @@ import { Watch, Home } from '../Views'
 const Router = () => {
     return(
 
-    <div className='View'>
+    // <div className='View'>
 
         <Switch>
 
@@ -16,13 +17,17 @@ const Router = () => {
                 <Home />
             </Route>
 
-            <Route exact path='/room'>
+            <Route exact path={'/room/:id*'}>
                 <Watch />
+            </Route>
+
+            <Route math="*">
+                <Redirect to="/" />
             </Route>
 
         </Switch>
 
-    </div>
+    /* </div> */
 
     )
 }

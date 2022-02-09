@@ -24,17 +24,22 @@ const HomeTemplate = ({buttons, children}) => {
             <PosterBgWrapper src={homePoster}>
                 <div>
 
-                    <ViewHeader>{l('hello')}</ViewHeader>
+                    <ViewHeader noTitleMargin>{l('hello')}</ViewHeader>
 
-                    <TextContent>
+                    <TextContent style={{marginTop: 0, marginBottom: 30}}>
                         <p>{l('youNeedToJoinARoom')}</p>
                     </TextContent>
 
-                        <Buttons
-                            btnProps={btnProps}
-                            btns={buttons}
+                    <Buttons
+                        btnProps={btnProps}
+                        btns={buttons}
+                    />
 
-                        />
+                    <TextContent style={{marginTop: 30}}>
+                        <p>{l('joinExistingRoom')}</p>
+                    </TextContent>
+
+
                     {children}
                 </div>
             </PosterBgWrapper>

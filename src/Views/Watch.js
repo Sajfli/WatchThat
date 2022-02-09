@@ -4,12 +4,11 @@ import ky from 'ky'
 import URL from 'url-parse'
 import classnames from 'classnames'
 
-import useSocket from 'hooks/useSocket'
-
 // utils
 import isURL from 'validator/lib/isURL'
 
 // hooks
+import useSocket from 'hooks/useSocket'
 import useLocalisation from 'hooks/useLocalisation'
 import useModal from 'hooks/useModal'
 import useAuthModal from 'hooks/useAuthModal'

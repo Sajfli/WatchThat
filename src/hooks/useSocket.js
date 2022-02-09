@@ -4,27 +4,24 @@ import React, { useContext, useState } from 'react'
 
 const SocketContext = React.createContext()
 
-const SocketProvider = ({children}) => {
+const SocketProvider = ({ children }) => {
+    const [socket, setSocket] = useState(null)
 
-    const [ socket, setSocket ] = useState(null)
-
-    const [ userId, setUserId ] = useState(null)
+    const [userId, setUserId] = useState(null)
 
     const initSocket = (auth) => {
-
         const options = {
             path: config.SOCKET_PATH,
             autoConnect: true,
         }
 
-        if(!!auth.user) {
-
+        if (auth.user) {
             const token = localStorage.getItem('token')
-            if(!token) {
+            if (!token) {
                 setUserId(null)
             } else {
                 options.auth = {
-                    token
+                    token,
                 }
 
                 setUserId(auth.user._id)
@@ -36,16 +33,19 @@ const SocketProvider = ({children}) => {
         setSocket(conn)
     }
 
-    return(
-        <SocketContext.Provider value={{socket, userId, initSocket}}>
+    return (
+        <SocketContext.Provider value={{ socket, userId, initSocket }}>
             {children}
         </SocketContext.Provider>
     )
+}
 
+SocketProvider.propTypes = {
+    children: PropTypes.node.isRequired,
 }
 
 const useSocket = () => {
-    const {socket, userId, initSocket} = useContext(SocketContext)
+    const { socket, userId, initSocket } = useContext(SocketContext)
 
     return [socket, userId, initSocket]
 }

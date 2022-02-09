@@ -17,10 +17,21 @@ module.exports = {
 
     devServer: {
         host: '127.0.0.1',
-        port: 3001,
+        port: 3000,
         https: false,
 
         historyApiFallback: true,
+
+        proxy: {
+            '/api': {
+                target: 'http://localhost:5000',
+                secure: false,
+            },
+            '/socket/': {
+                target: 'http://localhost:5000',
+                secure: false,
+            },
+        },
     },
 
     resolve: {
@@ -78,7 +89,9 @@ module.exports = {
     },
 
     plugins: [
-        new HtmlWEbpackPlugin({ template: './public/index.html' }),
+        new HtmlWEbpackPlugin({
+            template: './public/index.html',
+        }),
         new MiniCssExtractPlugin(),
         new ErrorOverlayPlugin(),
         new ProvidePlugin({

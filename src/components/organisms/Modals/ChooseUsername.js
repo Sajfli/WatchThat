@@ -13,26 +13,22 @@ import validateUsername from 'utils/validateUsername'
 
 import LineError from 'components/atoms/LineError/LineError'
 
+const ChooseUsername = ({ isOpen, handleCloseModal }) => {
+    const [username, setUsername] = useState('')
+    const [, openAuthModal] = useAuthModal()
+    const [errors, setErrors] = useState(null)
 
-const ChooseUsername = ({ isOpen, handleCloseModal, cb }) => {
-
-    const [ username, setUsername ] = useState('')
-    const [ , openAuthModal ] = useAuthModal()
-    const [ errors, setErrors ] = useState(null)
-
-    const handleSubmit = e => {
-
+    const handleSubmit = (e) => {
         e.preventDefault()
 
         // validate
         validateUsername(username, (err) => {
-            if(!err) {
+            if (!err) {
                 localStorage.setItem('tempUsername', username)
                 handleCloseModal()
             } else {
                 setErrors(err)
             }
-
         })
     }
 
@@ -41,37 +37,51 @@ const ChooseUsername = ({ isOpen, handleCloseModal, cb }) => {
         openAuthModal()
     }
 
-    return(
+    return (
         <Modal handleClose={handleCloseModal} isOpen={isOpen}>
-            <Title type='small' center>Nazwa użytkownika</Title>
+            <Title type="small" center>
+                Nazwa użytkownika
+            </Title>
 
             <form onSubmit={handleSubmit}>
-
                 <TextContent>
-                    <p style={{textAlign: 'center'}}>Aby przejść dalej musisz wybrać tymczasową nazwę użytkownika</p>
-                    <Input value={username} onChange={({target}) => setUsername(target.value)} width='100%'/>
+                    <p style={{ textAlign: 'center' }}>
+                        Aby przejść dalej musisz wybrać tymczasową nazwę
+                        użytkownika
+                    </p>
+                    <Input
+                        value={username}
+                        onChange={({ target }) => setUsername(target.value)}
+                        width="100%"
+                    />
 
                     <LineError errors={errors} all center />
                 </TextContent>
 
                 <TextContent center>
-                    <Button width='200px' type='submit'>Ustaw nazwe użytkownika</Button>
+                    <Button width="200px" type="submit">
+                        Ustaw nazwe użytkownika
+                    </Button>
                 </TextContent>
-
-
             </form>
 
             <TextContent center>
-                <div style={{marginBottom: 8}}>
-                    ...lub<br/>
+                <div style={{ marginBottom: 8 }}>
+                    ...lub
+                    <br />
                     Zalogować się!
                 </div>
-                <Button width='200px' onClick={goToAuth}>Przejdź do logowania!</Button>
+                <Button width="200px" onClick={goToAuth}>
+                    Przejdź do logowania!
+                </Button>
             </TextContent>
-
-
         </Modal>
     )
+}
+
+ChooseUsername.propTypes = {
+    isOpen: PropTypes.boolean,
+    handleCloseModal: PropTypes.func.isRequired,
 }
 
 export default ChooseUsername

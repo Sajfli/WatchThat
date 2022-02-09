@@ -1,4 +1,3 @@
-
 import ky from 'ky'
 
 import HomeTemplate from 'components/pages/HomeTemplate'
@@ -8,64 +7,50 @@ import useLocalisation from 'hooks/useLocalisation'
 import useModal from 'hooks/useModal'
 import useError from 'hooks/useError'
 
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router'
 
 const Home = () => {
-
     const l = useLocalisation()
     const handleError = useError()
-    // const auth = useAuth()
 
-    const history = useHistory()
+    const navigate = useNavigate()
     const roomIdModal = useModal()
 
     const createRoom = async () => {
-
         try {
             let response = await ky.get('/api/v1/room/generateId')
             response = await response.json()
 
-            if(response && response.id) {
-                history.push('/room/' + response.id)
+            if (response && response.id) {
+                navigate('/room/' + response.id)
             } else {
                 alert('error')
             }
-        } catch(err) {
-            if(err.name === 'HTTPError') {
+        } catch (err) {
+            if (err.name === 'HTTPError') {
                 const errCode = (await err.response.json()).err
-                handleError({statusCode: errCode})
+                handleError({ statusCode: errCode })
             }
         }
-
     }
 
-    const joinRoom = (roomId) => new Promise((resolve, reject) => {
-        if(!roomId)
-            reject('No room ID')
+    const joinRoom = (roomId) =>
+        new Promise((resolve, reject) => {
+            if (!roomId) reject('No room ID')
 
-        history.push('/room/' + roomId)
-        resolve(true)
-    })
+            navigate('/room/' + roomId)
+            resolve(true)
+        })
 
     const buttons = [
         {
             label: l('createNewRoom'),
-            onClick: createRoom
-        }
+            onClick: createRoom,
+        },
     ]
 
-    return(
-        <HomeTemplate
-            buttons={buttons}
-        >
-            {/* {!auth.user && !localStorage.getItem('tempUsername') &&
-                <ChooseUsername
-                    isOpen={usernameModal.isOpen}
-                    handleCloseModal={usernameModal.handleCloseModal}
-                    cb={handleUsername}
-                />
-            } */}
-
+    return (
+        <HomeTemplate buttons={buttons}>
             {
                 <TypeRoomId
                     isOpen={roomIdModal.isOpen}

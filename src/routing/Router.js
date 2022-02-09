@@ -1,34 +1,16 @@
-import {
-    Switch,
-    Route,
-    Redirect
-} from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 import { Watch, Home } from '../Views'
 
 const Router = () => {
-    return(
+    return (
+        <Routes>
+            <Route index path="/" element={<Home />} />
 
-    // <div className='View'>
+            <Route path={'/room/:id*'} element={<Watch />} />
 
-        <Switch>
-
-            <Route exact path='/'>
-                <Home />
-            </Route>
-
-            <Route exact path={'/room/:id*'}>
-                <Watch />
-            </Route>
-
-            <Route math="*">
-                <Redirect to="/" />
-            </Route>
-
-        </Switch>
-
-    /* </div> */
-
+            <Route path="*" element={<Navigate replace to="/" />} />
+        </Routes>
     )
 }
 

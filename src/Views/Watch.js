@@ -28,25 +28,23 @@ import style from './Watch.module.scss'
 const Watch = () => {
     const l = useLocalisation()
 
-    const playerContainer = useRef(null)
-    const membersRef = useRef(null)
+    const playerContainer = useRef(null),
+        membersRef = useRef(null)
 
-    const navigate = useNavigate()
-    const params = useParams()
+    const navigate = useNavigate(),
+        params = useParams()
 
-    const usernameModal = useModal()
-    const [isAuthModalOpen] = useAuthModal()
+    const usernameModal = useModal(),
+        [isAuthModalOpen] = useAuthModal()
 
     const auth = useAuth()
 
     const handleError = useError()
 
-    const [video, setVideo] = useState({})
-    const [currentRoom, setCurrentRoom] = useState(null)
-    const [search, setSearch] = useState('')
+    const [video, setVideo] = useState({}),
+        [currentRoom, setCurrentRoom] = useState(null),
+        [search, setSearch] = useState('')
 
-    const [areMembersWrapped, setAreMembersWrapped] = useState(false)
-    const [minUnwrappedWidth, setMinUnwrappedWidth] = useState(1150)
     const [containerWidth, setContainerWidth] = useState(800)
 
     const [members, setMembers] = useState(
@@ -206,61 +204,17 @@ const Watch = () => {
     }, [socket, members, username]) // eslint-disable-line
 
     useEffect(() => {
-        if (!membersRef.current || !playerContainer.current) return
-
-        let timeout = null
-
-        const compare = () => {
-            clearTimeout(timeout)
-
-            const getY = (el) => {
-                let pos = 0
-
-                while (el) {
-                    pos += el.offsetTop - el.scrollTop + el.clientTop
-                    el = el.offsetParent
-                }
-
-                return pos
-            }
-
-            const members = membersRef.current,
-                player = playerContainer.current
-
-            if (getY(members) !== getY(player)) {
-                if (
-                    window.innerWidth >= minUnwrappedWidth &&
-                    !!minUnwrappedWidth
-                )
-                    setAreMembersWrapped(false)
-                else setAreMembersWrapped(true)
-            } else {
-                if (window.innerWidth < minUnwrappedWidth || !minUnwrappedWidth)
-                    setMinUnwrappedWidth(window.innerWidth)
-                setAreMembersWrapped(false)
-            }
-        }
-
-        window.addEventListener('resize', compare)
-
-        timeout = setTimeout(compare, 20)
-
-        return () => {
-            window.removeEventListener('resize', compare)
-            clearTimeout(timeout)
-        }
-    }, [membersRef, playerContainer, minUnwrappedWidth])
-
-    useEffect(() => {
         if (!playerContainer.current) return
 
         const updateWidth = () => {
             setContainerWidth(playerContainer.current.offsetWidth)
         }
 
-        window.addEventListener('resize', updateWidth)
+        const observer = new ResizeObserver(updateWidth).observe(
+            playerContainer.current
+        )
 
-        return () => window.removeEventListener('resize', updateWidth)
+        return () => observer.disconnect()
     }, [playerContainer])
 
     const handleSubmit = async (e) => {
@@ -306,13 +260,8 @@ const Watch = () => {
     }
 
     return (
-        <div
-            className={classnames(
-                style.Watch,
-                areMembersWrapped && style.membersWrapped
-            )}
-        >
-            <RoomControls playerContainer={playerContainer} />
+        <div className={classnames(style.Watch)}>
+            <RoomControls containerWidth={containerWidth} />
             <div
                 ref={playerContainer}
                 className={style.container}
@@ -343,7 +292,7 @@ const Watch = () => {
                 <div className={style.playerBox}>
                     <Player
                         video={video}
-                        playerContainer={playerContainer}
+                        containerWidth={containerWidth}
                         socket={socket}
                     />
                 </div>
@@ -351,7 +300,6 @@ const Watch = () => {
             <RoomMembers
                 playerContainer={playerContainer}
                 forwardRef={membersRef}
-                wrapped={areMembersWrapped}
                 members={members}
             />
         </div>

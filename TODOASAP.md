@@ -1,5 +1,5 @@
 # Things to do/fix ASAP
 
-* Rerender loop after sign out while in loop
+* Rerender loop after sign out while in room
 * Copy manifest.json to dist on build or smth
 * Fix strange bug with firefox

@@ -28,7 +28,7 @@ import {
 import style from './Player.module.scss'
 import useSocket from 'hooks/useSocket'
 
-const Player = ({ video = {}, playerContainer }) => {
+const Player = ({ video = {}, containerWidth }) => {
     const [playing, setPlaying] = useState(true)
     const [muted, setMuted] = useState(false)
     const [expanded, setExpanded] = useState(false)
@@ -37,7 +37,7 @@ const Player = ({ video = {}, playerContainer }) => {
 
     const [mouseMoving, setMouseMoving] = useState(true)
 
-    const [containerWidth, setContainerWidth] = useState(null)
+    // const [containerWidth, setContainerWidth] = useState(null)
 
     const [receivedTimestamp, setReceivedTimestamp] = useState(null)
 
@@ -149,21 +149,6 @@ const Player = ({ video = {}, playerContainer }) => {
             socket.off('get video state')
         }
     }, [socket, playing, progress, video, receivedTimestamp]) // eslint-disable-line
-
-    // container width
-    useEffect(() => {
-        const updateWidth = () => {
-            if (!playerContainer.current) return
-
-            setContainerWidth(playerContainer.current.offsetWidth)
-        }
-
-        updateWidth()
-
-        window.addEventListener('resize', updateWidth)
-
-        return () => window.removeEventListener('resize', updateWidth)
-    }, [playerContainer])
 
     const seekTo = (t) => {
         if (!playerRef.current) return false
@@ -520,7 +505,7 @@ const Player = ({ video = {}, playerContainer }) => {
 
 Player.propTypes = {
     video: PropTypes.object,
-    playerContainer: PropTypes.any,
+    containerWidth: PropTypes.number,
 }
 
 export default Player

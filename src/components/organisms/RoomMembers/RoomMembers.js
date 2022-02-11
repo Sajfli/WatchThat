@@ -4,7 +4,7 @@ import Avatar from 'components/atoms/Avatar/Avatar'
 
 import style from './RoomMembers.module.scss'
 
-const RoomMembers = ({ playerContainer, forwardRef, wrapped, members }) => {
+const RoomMembers = ({ playerContainer, forwardRef, members }) => {
     const [membersSize, setMembersSize] = useState(null)
 
     // container width
@@ -18,23 +18,17 @@ const RoomMembers = ({ playerContainer, forwardRef, wrapped, members }) => {
             })
         }
 
-        setTimeout(() => {
-            updateWidth()
-        }, 1)
+        const observer = new ResizeObserver(updateWidth).observe(
+            playerContainer.current
+        )
 
-        window.addEventListener('resize', updateWidth)
-
-        return () => window.removeEventListener('resize', updateWidth)
+        return () => observer.disconnect()
     }, [playerContainer])
 
     return (
         <div
             ref={forwardRef}
-            className={classnames(
-                style.roomMembers,
-                'roomMembers',
-                wrapped && style.wrapped
-            )}
+            className={classnames(style.roomMembers, 'roomMembers')}
             style={
                 membersSize && {
                     '--height': membersSize.height + 'px',

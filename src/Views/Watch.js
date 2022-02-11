@@ -46,9 +46,14 @@ const Watch = () => {
     const [search, setSearch] = useState('')
 
     const [areMembersWrapped, setAreMembersWrapped] = useState(false)
-    const [minUnwrappedWidth, setMinUnwrappedWidth] = useState(1200)
+    const [minUnwrappedWidth, setMinUnwrappedWidth] = useState(1150)
+    const [containerWidth, setContainerWidth] = useState(800)
 
-    const [members, setMembers] = useState([])
+    const [members, setMembers] = useState(
+        1 === 2 //eslint-disable-line
+            ? [{ username: 'Sajmon', socketId: 'nwm', _id: null }]
+            : []
+    )
 
     const [socket, socketUserId, initSocket] = useSocket()
 
@@ -66,9 +71,10 @@ const Watch = () => {
     // init socket
     useEffect(() => {
         if (
-            !!socket &&
-            ((auth.user && socketUserId === auth.user._id) ||
-                (!auth.user && !socketUserId))
+            !auth.checked ||
+            (socket &&
+                ((auth.user && socketUserId === auth.user._id) ||
+                    (!auth.user && !socketUserId)))
         )
             return
 
@@ -118,7 +124,7 @@ const Watch = () => {
 
         socket.on('room_invalid', () => {
             handleError({ err: 'invalidRoom' })
-            history.push('/')
+            navigate('/')
         })
 
         socket.on('room_error', () => {
@@ -127,9 +133,61 @@ const Watch = () => {
 
         // users actions
         socket.on('user_joined', (params) => {
-            console.log(`${params.username} joined the room`, params)
-            const _members = [...members] || []
+            const _members = Array.isArray(members) ? [...members] : []
             _members.push(params)
+
+            setMembers(_members)
+        })
+
+        socket.on('user_leaved', (params) => {
+            if (!members || !Array.isArray(members) || members.length < 1)
+                return
+
+            console.log(`${params.socketId} leaved from the room`, params)
+
+            const userIndex = members.findIndex(({ socketId, _id }) => {
+                if (params.socketId === socketId) return true
+                if (_id && _id === params.socket_id) return true
+                return false
+            })
+
+            console.log('userIndex', userIndex, members)
+
+            if (userIndex >= 0) {
+                const _members = [...members]
+                _members.splice(userIndex, 1)
+                setMembers(_members)
+            }
+        })
+
+        socket.on('set_members_list', (params) => {
+            // self set
+            if (!username) return
+
+            const _members = [...members] || []
+
+            _members.push({
+                self: true,
+                username,
+                socketId: socket.id,
+                _id: auth.user ? auth.user._id : null,
+            })
+
+            if (params && Array.isArray(params) && params.length > 0) {
+                params.forEach((user) => {
+                    if (!user.socketId || !user.username) return
+
+                    let found = false
+                    if (_members.length > 0) {
+                        _members.forEach(({ socketId }) => {
+                            if (socketId === user.socketId) found = true
+                        })
+                    }
+
+                    if (!found) _members.push(user)
+                })
+            }
+
             setMembers(_members)
         })
 
@@ -145,7 +203,7 @@ const Watch = () => {
             socket.off('room_error')
             socket.off('user_joined')
         }
-    }, [socket]) // eslint-disable-line
+    }, [socket, members, username]) // eslint-disable-line
 
     useEffect(() => {
         if (!membersRef.current || !playerContainer.current) return
@@ -192,6 +250,18 @@ const Watch = () => {
             clearTimeout(timeout)
         }
     }, [membersRef, playerContainer, minUnwrappedWidth])
+
+    useEffect(() => {
+        if (!playerContainer.current) return
+
+        const updateWidth = () => {
+            setContainerWidth(playerContainer.current.offsetWidth)
+        }
+
+        window.addEventListener('resize', updateWidth)
+
+        return () => window.removeEventListener('resize', updateWidth)
+    }, [playerContainer])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -243,7 +313,13 @@ const Watch = () => {
             )}
         >
             <RoomControls playerContainer={playerContainer} />
-            <div ref={playerContainer} className={style.container}>
+            <div
+                ref={playerContainer}
+                className={style.container}
+                style={{
+                    '--width': containerWidth + 'px',
+                }}
+            >
                 {!username && (
                     <ChooseUsername
                         isOpen={usernameModal.isOpen}
@@ -254,20 +330,17 @@ const Watch = () => {
                     />
                 )}
 
-                <div className={style.playerBox}>
-                    <form onSubmit={handleSubmit}>
-                        <TextInput
-                            width="100%"
-                            height="40px"
-                            className={style.input}
-                            placeholder={l('typeVideoUrl')}
-                            value={search}
-                            onChange={({ target: { value } }) =>
-                                setSearch(value)
-                            }
-                        />
-                    </form>
+                <form onSubmit={handleSubmit} className={style.input}>
+                    <TextInput
+                        width="100%"
+                        height="40px"
+                        placeholder={l('typeVideoUrl')}
+                        value={search}
+                        onChange={({ target: { value } }) => setSearch(value)}
+                    />
+                </form>
 
+                <div className={style.playerBox}>
                     <Player
                         video={video}
                         playerContainer={playerContainer}

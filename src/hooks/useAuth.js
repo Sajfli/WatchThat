@@ -1,4 +1,10 @@
-import { useContext, useEffect, useState, createContext, useCallback } from 'react'
+import {
+    useContext,
+    useEffect,
+    useState,
+    createContext,
+    useCallback,
+} from 'react'
 import { getUsername } from 'services/getUserData'
 import ky from 'ky'
 
@@ -6,77 +12,79 @@ import useError from './useError'
 
 const AuthContext = createContext({})
 
-const AuthProvider = ({children}) => {
-
-    const [ user, setUser ] = useState(null)
-    const [ usernameTries, setUsernameTries ] = useState(0)
+const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null)
+    const [usernameTries, setUsernameTries] = useState(0)
+    const [checked, setChecked] = useState(false)
 
     const handleError = useError()
 
-
     const getUserName = useCallback(async () => {
-
-        if(!user || user.username) return
+        if (!user || user.username) return
 
         const username = await getUsername(user._id)
 
-        if(!username) return
+        if (!username) return
 
-        setUser({...user, username})
+        setUser({ ...user, username })
 
         setTimeout(() => {
             setUsernameTries(usernameTries + 1)
         }, 100)
-
     }, [usernameTries, user])
 
     useEffect(() => {
-        if(!user && !!user && (!user.auth || user.username || !user._id || usernameTries >= 3)) return
+        if (
+            !user &&
+            !!user &&
+            (!user.auth || user.username || !user._id || usernameTries >= 3)
+        )
+            return
 
         getUserName()
-
     }, [user, getUserName, usernameTries])
 
     useEffect(() => {
         const token = localStorage.getItem('token')
 
-        if(token) {
-            (async () => {
-
+        if (token) {
+            ;(async () => {
                 try {
+                    const response = await ky
+                        .get('/api/v1/auth/', {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        })
+                        .json()
 
-                    const response = await ky.get('/api/v1/auth/', {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }).json()
+                    if (response) {
+                        setChecked(true)
+                    }
 
-                    if(!response.auth) {
-                        console.err("invalid_token")
+                    if (!response.auth) {
+                        console.err('invalid_token')
                         localStorage.removeItem('token')
                         return
                     }
 
                     setUser({
                         auth: true,
-                        _id: response._id
+                        _id: response._id,
                     })
-
-                } catch(err) {
+                } catch (err) {
                     console.log(err)
+                    setChecked(true)
                 }
-
             })()
-        }
+        } else setChecked(true)
     }, [])
 
     const handleAuthError = (err, cb, signUp) => {
-        if(err.response && err.response.status) {
-
-            if(signUp && err.response.status === 400) {
+        if (err.response && err.response.status) {
+            if (signUp && err.response.status === 400) {
                 cb(err.response)
-            } else if(!signUp && err.response.status === 401)
-                cb(1)
+            } else if (!signUp && err.response.status === 401) cb(1)
             else {
                 cb(2)
                 handleError(null, err.response.status)
@@ -87,46 +95,45 @@ const AuthProvider = ({children}) => {
         }
     }
 
-    const signIn = async({ email, password }, cb) => {
+    const signIn = async ({ email, password }, cb) => {
         try {
-            const response = await ky.post('/api/v1/auth/login', {
-                json: {email, password}
-            }).json()
+            const response = await ky
+                .post('/api/v1/auth/login', {
+                    json: { email, password },
+                })
+                .json()
 
             const { err, data } = response
 
-            if(err) throw Error(err)
+            if (err) throw Error(err)
 
             console.log(data)
             setUser(data)
             localStorage.setItem('token', data.token)
 
-            if(cb)
-                cb(0)
-
-        } catch(err) {
+            if (cb) cb(0)
+        } catch (err) {
             handleAuthError(err, cb)
         }
     }
 
     const signUp = async ({ email, username, password }, cb) => {
         try {
-            const response = await ky.post('/api/v1/auth/register', {
-                json: { email, username, password }
-            }).json()
+            const response = await ky
+                .post('/api/v1/auth/register', {
+                    json: { email, username, password },
+                })
+                .json()
 
             const { err, data } = response
 
-            if(err) throw Error(err)
+            if (err) throw Error(err)
 
             setUser(data)
             localStorage.setItem('token', data.token)
 
-            if(cb)
-                cb()
-
-
-        } catch(err) {
+            if (cb) cb()
+        } catch (err) {
             handleAuthError(err, cb, true)
         }
     }
@@ -136,12 +143,17 @@ const AuthProvider = ({children}) => {
         localStorage.removeItem('token')
     }
 
-    return(
-        <AuthContext.Provider value={{ user, signIn, signOut, signUp }}>
+    return (
+        <AuthContext.Provider
+            value={{ user, signIn, signOut, signUp, checked }}
+        >
             {children}
         </AuthContext.Provider>
     )
+}
 
+AuthProvider.propTypes = {
+    children: PropTypes.node.isRequired,
 }
 
 const useAuth = () => {

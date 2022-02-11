@@ -1,3 +1,4 @@
 build
 node_modules
-*.md
+README.md
+TODOASAP.md

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const path = require('path')
-const HtmlWEbpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
 const ProvidePlugin = require('webpack/lib/ProvidePlugin')
@@ -16,7 +16,7 @@ module.exports = {
     },
 
     devServer: {
-        host: '127.0.0.1',
+        host: '0.0.0.0',
         port: 3000,
         https: false,
 
@@ -24,10 +24,6 @@ module.exports = {
 
         proxy: {
             '/api': {
-                target: 'http://localhost:5000',
-                secure: false,
-            },
-            '/socket/': {
                 target: 'http://localhost:5000',
                 secure: false,
             },
@@ -52,7 +48,7 @@ module.exports = {
                 test: /\.s?css$/,
                 oneOf: [
                     {
-                        test: /\.m\.s?css$/,
+                        test: /\.module\.s?css$/,
                         use: [
                             MiniCssExtractPlugin.loader,
                             {
@@ -89,8 +85,11 @@ module.exports = {
     },
 
     plugins: [
-        new HtmlWEbpackPlugin({
-            template: './public/index.html',
+        new HtmlWebpackPlugin({
+            template: './public/index.ejs',
+            templateParameters: {
+                PUBLIC_URL: '/public/',
+            },
         }),
         new MiniCssExtractPlugin(),
         new ErrorOverlayPlugin(),

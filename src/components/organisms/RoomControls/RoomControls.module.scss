@@ -4,7 +4,8 @@
 
 .roomControls {
     position: absolute;
-    top: 20px; left: 50%;
+    top: 20px;
+    left: 50%;
     transform: translateX(-50%);
 
     height: 35px;
@@ -16,10 +17,11 @@
     display: flex;
     align-items: center;
     padding: 0 10px;
+    margin: 0 !important;
 
-    @include xs {
-        // background-color: green !important;
-        top: 0; left: 0;
+    @include media(sm, xs) {
+        top: 0;
+        left: 0;
         width: 100%;
         transform: translateX(0);
 
@@ -27,7 +29,6 @@
     }
 
     & > .btn {
-        @include btn(28px, 7px, 1rem, .5);
+        @include btn(28px, 7px, 1rem, 0.5);
     }
 }
-

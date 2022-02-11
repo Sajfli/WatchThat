@@ -2,3 +2,4 @@
 
 * Rerender loop after sign out while in loop
 * Copy manifest.json to dist on build or smth
+* Fix strange bug with firefox

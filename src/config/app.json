@@ -1,4 +1,4 @@
 {
     "SOCKET_URL": "/",
-    "SOCKET_PATH": "/socket"
+    "SOCKET_PATH": "/api/socket"
 }

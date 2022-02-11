@@ -6,16 +6,14 @@ import style from './RoomControls.module.scss'
 import useToast from 'hooks/useToast'
 import useError from 'hooks/useError'
 
-const RoomControls = ({playerContainer}) => {
-
-    const [ minWidth, setMinWidth ] = useState(null)
+const RoomControls = ({ playerContainer }) => {
+    const [minWidth, setMinWidth] = useState(null)
 
     const toast = useToast()
     const handleError = useError()
 
     useEffect(() => {
-
-        if(!playerContainer.current) return
+        if (!playerContainer.current) return
 
         const updateMinWidth = () => {
             setMinWidth(playerContainer.current.offsetWidth)
@@ -28,13 +26,11 @@ const RoomControls = ({playerContainer}) => {
         return () => {
             window.removeEventListener('resize', updateMinWidth)
         }
-
-
     }, [playerContainer])
 
     const handleInvite = () => {
-
-        navigator.clipboard.writeText(window.location.href)
+        navigator.clipboard
+            .writeText(window.location.href)
             .then(() => {
                 toast('inviteClipboard')
             })
@@ -43,13 +39,17 @@ const RoomControls = ({playerContainer}) => {
             })
     }
 
-    return(
-        <div className={style.roomControls} style={{minWidth}}>
+    return (
+        <div className={style.roomControls} style={{ minWidth }}>
             <div className={style.btn} onClick={handleInvite}>
                 <FontAwesomeIcon icon={faUserPlus} />
             </div>
         </div>
     )
+}
+
+RoomControls.propTypes = {
+    playerContainer: PropTypes.any,
 }
 
 export default RoomControls

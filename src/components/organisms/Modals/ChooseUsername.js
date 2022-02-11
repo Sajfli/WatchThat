@@ -80,7 +80,7 @@ const ChooseUsername = ({ isOpen, handleCloseModal }) => {
 }
 
 ChooseUsername.propTypes = {
-    isOpen: PropTypes.boolean,
+    isOpen: PropTypes.bool,
     handleCloseModal: PropTypes.func.isRequired,
 }
 

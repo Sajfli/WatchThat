@@ -3,17 +3,20 @@
 $controls-height: 50px;
 
 .playerContainer {
-
     --player-width: #{$player-width};
-    --max-width: 100%;
+    --max-width: 800px;
 
-    width: var(--player-width);
-    max-width: var(--max-width);
-    height: calc(9 / 16 * var(--player-width));
+    width: 100%;
+    height: 100%;
+
+    // width: var(--max-width);
+    // width: var(--player-width);
+    // max-width: var(--max-width);
+    // height: calc(9 / 16 * var(--max-width));
 
     background-color: #000;
 
-    max-height: 80vh !important;
+    // max-height: 80vh !important;
 
     position: relative;
 }
@@ -23,8 +26,10 @@ $controls-height: 50px;
 }
 
 .Player {
-    width: 100%; height: 100%;
-    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
 
     background-color: #000;
     position: absolute;
@@ -32,8 +37,10 @@ $controls-height: 50px;
 
 .ReactPlayer {
     z-index: 1;
-    width: 100%; height: 100%;
-    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
     // pointer-events: none;
 }
 
@@ -53,13 +60,15 @@ $controls-height: 50px;
     display: block;
 }
 
-.mouseNotMoving .controls:not(:hover), .mouseNotMoving .title {
+.mouseNotMoving .controls:not(:hover),
+.mouseNotMoving .title {
     display: none !important;
 }
 
 .title {
     position: absolute;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     min-height: 50px;
     width: 100%;
     line-height: 30px;
@@ -76,9 +85,11 @@ $controls-height: 50px;
     // display: flex;
 
     position: absolute;
-    bottom: 0; left: 0;
+    bottom: 0;
+    left: 0;
 
-    height: $controls-height; width: 100%;
+    height: $controls-height;
+    width: 100%;
 
     padding: 10px;
 
@@ -109,14 +120,16 @@ $controls-height: 50px;
     flex: 2;
 }
 
-.leftCorner, .rightCorner {
+.leftCorner,
+.rightCorner {
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
 .controlComponent {
-    width: 30px; height: 30px;
+    width: 30px;
+    height: 30px;
     line-height: 30px;
     text-align: center;
     font-size: 22px;
@@ -138,8 +151,8 @@ $controls-height: 50px;
 
     flex: 5;
 
-    transform: scaleY(.5);
-    transition: transform linear .05s;
+    transform: scaleY(0.5);
+    transition: transform linear 0.05s;
     cursor: pointer;
 }
 
@@ -147,10 +160,13 @@ $controls-height: 50px;
     transform: scaleY(1);
 }
 
-.progressBarLayer, .progressBar .watched {
+.progressBarLayer,
+.progressBar .watched {
     position: absolute;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .progressBarLayer {
@@ -172,10 +188,9 @@ $controls-height: 50px;
 }
 
 .volumeBarBox {
-
     display: none;
 
-    transition: display .2s linear .2s;
+    transition: display 0.2s linear 0.2s;
 
     position: absolute;
     bottom: 0;
@@ -193,8 +208,11 @@ $controls-height: 50px;
 }
 
 .volumeBarBox::before {
-    content: ''; top: 0; left: 0;
-    width: 100%; height: 100px;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
 
     position: absolute;
 
@@ -204,8 +222,8 @@ $controls-height: 50px;
 
 @keyframes play {
     from {
-        transform: translate(-50%, -50%) scale(.6);
-        opacity: .8;
+        transform: translate(-50%, -50%) scale(0.6);
+        opacity: 0.8;
     }
     to {
         transform: translate(-50%, -50%) scale(1.2);
@@ -214,11 +232,11 @@ $controls-height: 50px;
 }
 
 .playCircle {
-
     display: none;
 
     position: absolute;
-    top: 50%; left: 50%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     font-size: 100px;
     color: #161616;
@@ -227,6 +245,6 @@ $controls-height: 50px;
 
     animation-name: play;
     animation-timing-function: ease-in-out;
-    animation-duration: .6s;
+    animation-duration: 0.6s;
     animation-fill-mode: forwards;
 }

@@ -1,0 +1,46 @@
+@import 'utils/master';
+@import 'utils/media';
+
+$member-height: 54px;
+$members-padding-bottom: 25px;
+
+.roomSidebar {
+    background-color: $bg2-color;
+
+    min-width: 200px;
+    padding: 10px;
+    flex: 1;
+    min-height: fit-content;
+    height: var(--height);
+
+    @include media(sm, xs) {
+        min-height: 60px;
+    }
+
+    &.wrapped {
+        width: var(--width);
+    }
+}
+
+.user {
+    width: $member-height;
+    height: $member-height;
+    padding: 2px;
+
+    border-radius: var(--global-border-radius);
+
+    margin: 5px;
+
+    &.self {
+        background-color: $accent-color;
+    }
+}
+
+.members {
+    display: flex;
+    height: $member-height + $members-padding-bottom;
+    padding-bottom: 25px;
+    border-bottom: 2px solid $accent-color;
+    overflow-x: auto;
+    overflow-y: hidden;
+}

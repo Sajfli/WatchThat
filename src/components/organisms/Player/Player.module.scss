@@ -106,6 +106,7 @@ $controls-height: 50px;
     bottom: -$controls-height;
     display: flex !important;
     background-color: #000;
+    // margin-bottom: $controls-height;
 }
 
 .moveControls.fullscreen .controls {

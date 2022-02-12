@@ -1,0 +1,65 @@
+@import 'components/organisms/RoomSidebar/RoomSidebar.module.scss';
+@import 'utils/mixins';
+
+$btn-size: 35px;
+
+.chat {
+    height: calc(100% - #{$member-height + $members-padding-bottom});
+
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+        width: 100%;
+    }
+
+    & > .output {
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    & > .input {
+        height: 40px;
+
+        & > form {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+
+            & > .textBox {
+                width: calc(100% - #{$btn-size});
+                height: 100%;
+            }
+
+            & .textBoxInput {
+                text-align: left !important;
+            }
+
+            & > .btn {
+                @include btn($btn-size, 5px, 1rem);
+            }
+        }
+    }
+}
+
+.message {
+    & > .sender {
+        user-select: none;
+        margin-right: 5px;
+        font-weight: 700;
+    }
+
+    & > .content {
+        overflow-wrap: break-word;
+    }
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.01);
+    }
+
+    &.local {
+        color: #8d8d8d;
+    }
+}

@@ -1,24 +1,36 @@
- import { useState } from 'react'
+import { useState } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 import style from './Input.module.scss'
 
-const Input = ({width = 160, height = 40, className, inputClassName, type = 'text', ...rest}) => {
+const Input = ({
+    width = 160,
+    height = 40,
+    className,
+    inputClassName,
+    type = 'text',
+    ...rest
+}) => {
+    const [focused, setFocused] = useState(false)
 
-    const [ focused, setFocused ] = useState(false)
-
-    return(
+    return (
         <div
-            style={{width, height}}
-            className={classnames(className, style.TextInputContainer, focused && style.focused)}
+            style={width && height ? { width, height } : {}}
+            className={classnames(
+                className,
+                style.TextInputContainer,
+                focused && style.focused
+            )}
         >
-
-            {
-                ['borderTop', 'borderRight', 'borderBottom', 'borderLeft'].map(border =>(
-                    <div key={border} className={classnames(style.border, style[border])}></div>
-                ))
-            }
+            {['borderTop', 'borderRight', 'borderBottom', 'borderLeft'].map(
+                (border) => (
+                    <div
+                        key={border}
+                        className={classnames(style.border, style[border])}
+                    ></div>
+                )
+            )}
 
             <input
                 {...rest}
@@ -32,13 +44,13 @@ const Input = ({width = 160, height = 40, className, inputClassName, type = 'tex
 }
 
 Input.propTypes = {
-    width: PropTypes.string,
-    height: PropTypes.string,
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     className: PropTypes.string,
     inputClassName: PropTypes.string,
 
-    type: PropTypes.string
+    type: PropTypes.string,
 }
 
 export default Input

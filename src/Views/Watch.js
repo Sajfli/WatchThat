@@ -20,7 +20,7 @@ import Player from 'components/organisms/Player/Player'
 import TextInput from 'components/atoms/Input/Input'
 import ChooseUsername from 'components/organisms/Modals/ChooseUsername'
 import RoomControls from 'components/organisms/RoomControls/RoomControls'
-import RoomMembers from 'components/organisms/RoomMembers/RoomMembers'
+import RoomSidebar from 'components/organisms/RoomSidebar/RoomSidebar'
 
 // style
 import style from './Watch.module.scss'
@@ -48,16 +48,21 @@ const Watch = () => {
     const [containerWidth, setContainerWidth] = useState(800)
 
     const [members, setMembers] = useState(
-        1 === 2 //eslint-disable-line
-            ? [{ username: 'Sajmon', socketId: 'nwm', _id: null }]
-            : []
-    )
+            1 === 2 //eslint-disable-line
+                ? [{ username: 'Sajmon', socketId: 'nwm', _id: null }]
+                : []
+        ),
+        [moveControls, setMoveControls] = useState(false)
 
     const [socket, socketUserId, initSocket] = useSocket()
 
     const username = auth.user
         ? auth.user.username
         : localStorage.getItem('tempUsername')
+
+    const handleMoveControls = (moved) => {
+        setMoveControls(moved)
+    }
 
     // handle unmount
     useEffect(() => {
@@ -207,14 +212,17 @@ const Watch = () => {
         if (!playerContainer.current) return
 
         const updateWidth = () => {
-            setContainerWidth(playerContainer.current.offsetWidth)
+            if (playerContainer.current)
+                setContainerWidth(playerContainer.current.offsetWidth)
         }
 
         const observer = new ResizeObserver(updateWidth).observe(
             playerContainer.current
         )
 
-        return () => observer.disconnect()
+        return () => {
+            if (observer) observer.disconnect()
+        }
     }, [playerContainer])
 
     const handleSubmit = async (e) => {
@@ -260,11 +268,14 @@ const Watch = () => {
     }
 
     return (
-        <div className={classnames(style.Watch)}>
+        <div className={style.Watch}>
             <RoomControls containerWidth={containerWidth} />
             <div
                 ref={playerContainer}
-                className={style.container}
+                className={classnames(
+                    style.container,
+                    moveControls && style.moveControls
+                )}
                 style={{
                     '--width': containerWidth + 'px',
                 }}
@@ -294,13 +305,16 @@ const Watch = () => {
                         video={video}
                         containerWidth={containerWidth}
                         socket={socket}
+                        cbMoveControls={handleMoveControls}
                     />
                 </div>
             </div>
-            <RoomMembers
+            <RoomSidebar
                 playerContainer={playerContainer}
+                moveControls={moveControls}
                 forwardRef={membersRef}
                 members={members}
+                username={username}
             />
         </div>
     )

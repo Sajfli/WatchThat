@@ -28,12 +28,13 @@ import {
 import style from './Player.module.scss'
 import useSocket from 'hooks/useSocket'
 
-const Player = ({ video = {}, containerWidth }) => {
+const Player = ({ video = {}, containerWidth, cbMoveControls }) => {
     const [playing, setPlaying] = useState(true)
-    const [muted, setMuted] = useState(false)
+    const [muted, setMuted] = useState(true)
     const [expanded, setExpanded] = useState(false)
     const [progress, setProgress] = useState(0)
     const [volume, setVolume] = useState(50)
+    const [moveControls, setMoveControls] = useState(false)
 
     const [mouseMoving, setMouseMoving] = useState(true)
 
@@ -150,6 +151,22 @@ const Player = ({ video = {}, containerWidth }) => {
         }
     }, [socket, playing, progress, video, receivedTimestamp]) // eslint-disable-line
 
+    useEffect(() => {
+        if (!video || !video.hostname) return
+
+        if (/youtu.*be/gi.test(video.hostname)) {
+            if (!moveControls) {
+                setMoveControls(true)
+                cbMoveControls(true)
+            }
+        } else {
+            if (moveControls) {
+                setMoveControls(false)
+                cbMoveControls(false)
+            }
+        }
+    }, [video])
+
     const seekTo = (t) => {
         if (!playerRef.current) return false
 
@@ -226,7 +243,6 @@ const Player = ({ video = {}, containerWidth }) => {
         indirect = video.indirect || false
 
     // if it's a youtube player move contols under youtube iframe
-    const moveControls = /youtu.*be/gi.test(video.hostname)
 
     return (
         <div
@@ -506,6 +522,7 @@ const Player = ({ video = {}, containerWidth }) => {
 Player.propTypes = {
     video: PropTypes.object,
     containerWidth: PropTypes.number,
+    cbMoveControls: PropTypes.func.isRequired,
 }
 
 export default Player

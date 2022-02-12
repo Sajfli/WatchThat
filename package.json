@@ -4,7 +4,7 @@
     "main": "src/index.js",
     "license": "GPL-3.0-only",
     "scripts": {
-        "start": "webpack serve --mode development",
+        "start": "webpack serve --mode development ",
         "build": "webpack --mode production",
         "buildErrorOverlay": "cd ./node_modules/error-overlay-webpack-plugin && yarn install && yarn build",
         "auto": "./doesErrorOverlayExists.sh"

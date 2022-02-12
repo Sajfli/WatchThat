@@ -2,7 +2,7 @@
 
 $input-border-size: 2px;
 
-$border-transition-duration: .2s;
+$border-transition-duration: 0.2s;
 
 .TextInputContainer {
     position: relative;
@@ -27,9 +27,9 @@ $border-transition-duration: .2s;
     background-color: rgba(31, 31, 31, 0.151);
     color: #fff;
 
-    border: $input-border-size solid rgba($accent-color, .3);
+    border: $input-border-size solid rgba($accent-color, 0.3);
 
-    transition: background-color .2s ease-in-out 0s;
+    transition: background-color 0.2s ease-in-out 0s;
 }
 
 // BORDERS
@@ -40,7 +40,8 @@ $border-transition-duration: .2s;
 }
 
 .borderTop {
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: $input-border-size;
     background-color: $accent-color;
@@ -52,7 +53,8 @@ $border-transition-duration: .2s;
 }
 
 .borderRight {
-    top: 0; right: 0;
+    top: 0;
+    right: 0;
     width: $input-border-size;
     height: 100%;
 
@@ -65,7 +67,8 @@ $border-transition-duration: .2s;
 }
 
 .borderBottom {
-    bottom: 0; left: 0;
+    bottom: 0;
+    left: 0;
     height: $input-border-size;
     width: 100%;
     background-color: $accent-color;
@@ -78,7 +81,8 @@ $border-transition-duration: .2s;
 }
 
 .borderLeft {
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     width: $input-border-size;
     height: 100%;
 
@@ -91,20 +95,20 @@ $border-transition-duration: .2s;
 }
 
 .focused {
-
-    & .borderTop, & .borderBottom {
+    & .borderTop,
+    & .borderBottom {
         transform: scaleX(1);
         transition-delay: 0s;
     }
 
-    & .borderLeft, & .borderRight {
+    & .borderLeft,
+    & .borderRight {
         transform: scaleY(1);
-        transition-delay: .2s;
+        transition-delay: 0.2s;
     }
 
     & .TextInput {
-        background-color: #2c2c2c;
-        transition-delay: .4s;
+        background-color: rgba($accent-color, 0.1);
+        transition-delay: 0.4s;
     }
-
 }

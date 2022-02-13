@@ -1,3 +1,4 @@
+@import 'utils/master';
 @import 'utils/media';
 @import 'utils/mixins';
 
@@ -20,6 +21,8 @@
     @include media(sm, xs) {
         justify-content: center;
         text-align: center;
+
+        min-height: calc(100vh - #{$sidebar-width});
 
         &:not(.fullOnSmall) .poster {
             display: none;

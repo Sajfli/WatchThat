@@ -10,14 +10,15 @@ const RoomControls = () => {
     const handleError = useError()
 
     const handleInvite = () => {
-        navigator.clipboard
-            .writeText(window.location.href)
-            .then(() => {
-                toast('inviteClipboard')
-            })
-            .catch(() => {
-                handleError('inviteClipboardError')
-            })
+        if (navigator)
+            navigator.clipboard
+                .writeText(window.location.href)
+                .then(() => {
+                    toast('inviteClipboard')
+                })
+                .catch(() => {
+                    handleError('inviteClipboardError')
+                })
     }
 
     return (

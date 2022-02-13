@@ -38,8 +38,6 @@ const Player = ({ video = {}, containerWidth, cbMoveControls }) => {
 
     const [mouseMoving, setMouseMoving] = useState(true)
 
-    // const [containerWidth, setContainerWidth] = useState(null)
-
     const [receivedTimestamp, setReceivedTimestamp] = useState(null)
 
     const [socket] = useSocket()

@@ -29,7 +29,9 @@ const RoomSidebar = ({
             playerContainer.current
         )
 
-        return () => observer.disconnect()
+        return () => {
+            if (observer) observer.disconnect()
+        }
     }, [playerContainer])
 
     return (

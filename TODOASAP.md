@@ -6,3 +6,4 @@
 * User join and leave feedback in (upcoming) chat
 * Users' video action feedback as popup on video
 * Take controls height from sass and add to container size in members and margin in watch
+* Add mute/unmute shortcut

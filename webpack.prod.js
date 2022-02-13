@@ -21,7 +21,7 @@ module.exports = merge(common, {
 
     output: {
         path: path.join(__dirname, '/dist'),
-        filename: 'bundle.js',
+        filename: 'static/js/[name].bundle.js',
         publicPath: '/',
         clean: true,
     },
@@ -35,8 +35,8 @@ module.exports = merge(common, {
                     transform: modifyManifest,
                 },
                 {
-                    from: './public/icons/',
-                    to: './icons/',
+                    from: './public/static/icons/',
+                    to: './static/icons/',
                 },
             ],
         }),

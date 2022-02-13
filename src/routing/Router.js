@@ -7,7 +7,7 @@ const Router = () => {
         <Routes>
             <Route index path="/" element={<Home />} />
 
-            <Route path={'/room/:id*'} element={<Watch />} />
+            <Route path={'/room/:id/'} element={<Watch />} />
 
             <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>

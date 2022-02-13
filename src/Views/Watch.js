@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, Suspense } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import ky from 'ky'
 import URL from 'url-parse'
@@ -16,11 +16,12 @@ import useError from 'hooks/useError'
 import useAuth from 'hooks/useAuth'
 
 // UI components
-import Player from 'components/organisms/Player/Player'
 import TextInput from 'components/atoms/Input/Input'
 import ChooseUsername from 'components/organisms/Modals/ChooseUsername'
 import RoomControls from 'components/organisms/RoomControls/RoomControls'
 import RoomSidebar from 'components/organisms/RoomSidebar/RoomSidebar'
+import Loading from 'components/molecules/Loading/Loading'
+const Player = React.lazy(() => import('components/organisms/Player/Player'))
 
 // style
 import style from './Watch.module.scss'
@@ -47,11 +48,7 @@ const Watch = () => {
 
     const [containerWidth, setContainerWidth] = useState(800)
 
-    const [members, setMembers] = useState(
-            1 === 2 //eslint-disable-line
-                ? [{ username: 'Sajmon', socketId: 'nwm', _id: null }]
-                : []
-        ),
+    const [members, setMembers] = useState([]),
         [moveControls, setMoveControls] = useState(false)
 
     const [socket, socketUserId, initSocket] = useSocket()
@@ -301,12 +298,14 @@ const Watch = () => {
                 </form>
 
                 <div className={style.playerBox}>
-                    <Player
-                        video={video}
-                        containerWidth={containerWidth}
-                        socket={socket}
-                        cbMoveControls={handleMoveControls}
-                    />
+                    <Suspense fallback={<Loading />}>
+                        <Player
+                            video={video}
+                            containerWidth={containerWidth}
+                            socket={socket}
+                            cbMoveControls={handleMoveControls}
+                        />
+                    </Suspense>
                 </div>
             </div>
             <RoomSidebar

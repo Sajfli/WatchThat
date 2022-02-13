@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 
 import Avatar from 'components/atoms/Avatar/Avatar'
-import RoomChat from 'components/organisms/RoomChat/RoomChat'
+const RoomChat = React.lazy(() =>
+    import('components/organisms/RoomChat/RoomChat')
+)
 
 import style from './RoomSidebar.module.scss'
+import Loading from 'components/molecules/Loading/Loading'
 
 const RoomSidebar = ({
     playerContainer,
@@ -60,11 +63,22 @@ const RoomSidebar = ({
                             title={username}
                         >
                             <Avatar _id={_id} size="full" />
-                            {/* <span className={style.username}>{username}</span> */}
                         </div>
                     ))}
             </div>
-            {username && <RoomChat username={username} />}
+            {username && (
+                <Suspense
+                    fallback={
+                        <Loading
+                            className={style.chatLoading}
+                            size="md"
+                            transparent
+                        />
+                    }
+                >
+                    <RoomChat username={username} />
+                </Suspense>
+            )}
         </div>
     )
 }

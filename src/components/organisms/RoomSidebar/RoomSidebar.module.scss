@@ -44,3 +44,7 @@ $members-padding-bottom: 25px;
     overflow-x: auto;
     overflow-y: hidden;
 }
+
+.chatLoading {
+    height: calc(100% - #{$member-height + $members-padding-bottom}) !important;
+}

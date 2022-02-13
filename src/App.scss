@@ -1,4 +1,5 @@
 @import 'utils/master';
+@import 'utils/media';
 
 :root {
     font-size: 18px;
@@ -13,6 +14,11 @@ body {
 
 .App {
     padding-left: $sidebar-width;
+
+    @include media(sm, xs) {
+        padding-left: 0;
+        padding-top: $sidebar-width;
+    }
 }
 
 .link {
@@ -28,7 +34,6 @@ body {
     padding-left: $sidebar-width;
 
     min-height: calc(100vh - #{$footer-height});
-    // min-height: calc(100vh - #{$header-height} - #{$footer-height});
 }
 
 .flexCenter {

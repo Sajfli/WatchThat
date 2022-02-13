@@ -1,7 +1,8 @@
 @import 'utils/master';
 @import 'utils/mixins';
+@import 'utils/media';
 
-$btn-size: $sidebar-width - 10px;
+$btn-size: $sidebar-width - 20px;
 $btn-border-radius: 10px;
 
 .SideBar {
@@ -10,7 +11,8 @@ $btn-border-radius: 10px;
 
     background-color: $shade-color;
     position: fixed;
-    top: 0; left : 0;
+    top: 0;
+    left: 0;
 
     padding: 20px 0;
 
@@ -19,56 +21,56 @@ $btn-border-radius: 10px;
 
     justify-content: space-between;
     align-items: center;
-}
 
-.block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    z-index: 100;
 
-.logo {
-    font-size: 20px;
-    font-weight: 700;
-}
+    & .block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
-.logoImg {
-    width: 55px;
-    height: auto;
-}
-
-.user {
-    text-align: center;
-
-    & img {
-        width: $btn-size;
-        height: $btn-size;
-        border-radius: $btn-border-radius;
+        & > div:not(.logo) {
+            margin: 10px 0;
+        }
     }
-}
 
-.btn {
+    & .logoImg {
+        width: $btn-size;
+        height: auto;
+    }
 
-    @include btn($btn-size, $btn-border-radius, 28px);
+    & .user {
+        text-align: center;
 
-    // text-align: center;
-    // cursor: pointer;
+        & img {
+            width: $btn-size;
+            height: $btn-size;
+            border-radius: $btn-border-radius;
+        }
+    }
 
-    // font-size: 28px;
+    & .btn {
+        @include btn($btn-size, $btn-border-radius, 28px);
+    }
 
-    // width: $btn-size;
-    // height:$btn-size;
-    // line-height: $btn-size;
+    @include media(sm, xs) {
+        width: 100vw;
+        height: $sidebar-width;
+        flex-direction: row;
+        padding: 0 20px;
 
-    // text-align: center;
-    // color: #d3d3d3;
+        $btn-size: $btn-size - 10px;
 
-    // border-radius: $btn-border-radius;
+        & .block {
+            flex-direction: row;
+            & > div:not(.logo) {
+                margin: 0 10px;
+            }
+        }
 
-    // transition: all .2s;
-
-    // &:hover {
-    //     color: #fff;
-    //     background-color: rgba(255, 255, 255, .05);
-    // }
+        & .user img {
+            width: $btn-size;
+            height: $btn-size;
+        }
+    }
 }

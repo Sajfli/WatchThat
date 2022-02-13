@@ -1,3 +1,5 @@
-.buttons > div {
-    margin: 12px 0;
+.buttons {
+    & > div {
+        margin: 12px 0;
+    }
 }

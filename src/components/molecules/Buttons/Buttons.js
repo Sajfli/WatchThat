@@ -2,9 +2,9 @@ import Button from 'components/atoms/Button/Button'
 
 import style from './Buttons.module.scss'
 
-const Buttons = ({ btnProps, btns }) => {
+const Buttons = ({ btnProps, btns, className }) => {
     return (
-        <div className={style.buttons}>
+        <div className={classnames(style.buttons, className)}>
             {btns &&
                 btns.map(({ label, ...rest }) => (
                     <Button {...rest} {...btnProps} key={label}>
@@ -17,7 +17,8 @@ const Buttons = ({ btnProps, btns }) => {
 
 Buttons.propTypes = {
     btnProps: PropTypes.any,
-    btns: PropTypes.array,
+    btns: PropTypes.array.isRequired,
+    className: PropTypes.string,
 }
 
 export default Buttons

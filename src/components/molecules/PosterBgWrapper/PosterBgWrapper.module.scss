@@ -1,6 +1,11 @@
+@import 'utils/media';
+@import 'utils/mixins';
+
 .posterBgWrapper {
     display: flex;
     align-items: center;
+
+    position: relative;
 
     justify-content: space-evenly;
 
@@ -8,4 +13,32 @@
 
     width: 100%;
     min-height: 100vh;
+    padding: 10px 40px;
+
+    overflow: hidden;
+
+    @include media(sm, xs) {
+        justify-content: center;
+        text-align: center;
+
+        &:not(.fullOnSmall) .poster {
+            display: none;
+        }
+
+        &.fullOnSmall .poster {
+            position: absolute;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+    }
+
+    @include media(xs) {
+        &.fullOnSmall .poster::before {
+            @include before();
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+    }
 }

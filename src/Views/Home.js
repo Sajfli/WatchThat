@@ -1,20 +1,15 @@
 import ky from 'ky'
+import { useNavigate } from 'react-router'
 
 import HomeTemplate from 'components/pages/HomeTemplate'
-import TypeRoomId from 'components/organisms/Modals/TypeRoomId'
-
 import useLocalisation from 'hooks/useLocalisation'
-import useModal from 'hooks/useModal'
 import useError from 'hooks/useError'
-
-import { useNavigate } from 'react-router'
 
 const Home = () => {
     const l = useLocalisation()
     const handleError = useError()
 
     const navigate = useNavigate()
-    const roomIdModal = useModal()
 
     const createRoom = async () => {
         try {
@@ -34,14 +29,6 @@ const Home = () => {
         }
     }
 
-    const joinRoom = (roomId) =>
-        new Promise((resolve, reject) => {
-            if (!roomId) reject('No room ID')
-
-            navigate('/room/' + roomId)
-            resolve(true)
-        })
-
     const buttons = [
         {
             label: l('createNewRoom'),
@@ -49,17 +36,7 @@ const Home = () => {
         },
     ]
 
-    return (
-        <HomeTemplate buttons={buttons}>
-            {
-                <TypeRoomId
-                    isOpen={roomIdModal.isOpen}
-                    handleCloseModal={roomIdModal.handleCloseModal}
-                    handleRoomJoin={joinRoom}
-                />
-            }
-        </HomeTemplate>
-    )
+    return <HomeTemplate buttons={buttons}></HomeTemplate>
 }
 
 export default Home

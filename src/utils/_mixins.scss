@@ -31,3 +31,13 @@
         background-color: rgba(255, 255, 255, $btn-hover-alpha);
     }
 }
+
+@mixin before($width: 100%, $height: 100%, $top: 0, $left: 0, $zIndex: 1) {
+    position: absolute;
+    content: '';
+    width: $width;
+    height: $height;
+    top: $top;
+    left: $left;
+    z-index: $zIndex;
+}

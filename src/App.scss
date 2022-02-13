@@ -29,7 +29,6 @@ body {
 
     min-height: calc(100vh - #{$footer-height});
     // min-height: calc(100vh - #{$header-height} - #{$footer-height});
-
 }
 
 .flexCenter {
@@ -40,7 +39,9 @@ body {
 
 .linkFill {
     text-decoration: none;
-    display: block; width: 100%; height: 100%;
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .textCenter {

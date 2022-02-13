@@ -1,0 +1,16 @@
+@import 'utils/media';
+
+.centerButtons {
+    @include media(sm, xs) {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.content {
+    @include media(sm) {
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 50px;
+        border-radius: var(--global-border-radius);
+    }
+}

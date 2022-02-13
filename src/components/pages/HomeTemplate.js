@@ -7,47 +7,38 @@ import Buttons from 'components/molecules/Buttons/Buttons'
 // hooks
 import useLocalisation from 'hooks/useLocalisation'
 
-// style
-
 // img
 import homePoster from 'res/img/posters/home.jpg'
 
-const HomeTemplate = ({buttons, children}) => {
-
+const HomeTemplate = ({ buttons, children }) => {
     const l = useLocalisation()
 
-    const btnProps = {width: '300px'}
+    const btnProps = { width: '300px' }
 
-    return(
-        // <div className={style.home}>
+    return (
+        <PosterBgWrapper src={homePoster}>
+            <div>
+                <ViewHeader noTitleMargin>{l('hello')}</ViewHeader>
 
-            <PosterBgWrapper src={homePoster}>
-                <div>
+                <TextContent style={{ marginTop: 0, marginBottom: 30 }}>
+                    <p>{l('youNeedToJoinARoom')}</p>
+                </TextContent>
 
-                    <ViewHeader noTitleMargin>{l('hello')}</ViewHeader>
+                <Buttons btnProps={btnProps} btns={buttons} />
 
-                    <TextContent style={{marginTop: 0, marginBottom: 30}}>
-                        <p>{l('youNeedToJoinARoom')}</p>
-                    </TextContent>
+                <TextContent style={{ marginTop: 30 }}>
+                    <p>{l('joinExistingRoom')}</p>
+                </TextContent>
 
-                    <Buttons
-                        btnProps={btnProps}
-                        btns={buttons}
-                    />
-
-                    <TextContent style={{marginTop: 30}}>
-                        <p>{l('joinExistingRoom')}</p>
-                    </TextContent>
-
-
-                    {children}
-                </div>
-            </PosterBgWrapper>
-
-
-        // </div>
+                {children}
+            </div>
+        </PosterBgWrapper>
     )
+}
 
+HomeTemplate.propTypes = {
+    buttons: PropTypes.array,
+    children: PropTypes.node,
 }
 
 export default HomeTemplate

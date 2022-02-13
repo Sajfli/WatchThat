@@ -7,13 +7,11 @@ import Toasts from 'components/molecules/Toasts/Toasts'
 // hooks
 import useAuthModal from 'hooks/useAuthModal'
 
-const MainTemplate = ({children}) => {
+const MainTemplate = ({ children }) => {
+    const [isOpen, handleOpenModal, handleCloseModal] = useAuthModal()
 
-    const [ isOpen, handleOpenModal, handleCloseModal ] = useAuthModal()
-
-    return(
-        <div className='App'>
-
+    return (
+        <div className="App">
             <Toasts />
 
             <SideBar authPopupCallback={handleOpenModal} />
@@ -25,6 +23,10 @@ const MainTemplate = ({children}) => {
             {children}
         </div>
     )
+}
+
+MainTemplate.propTypes = {
+    children: PropTypes.node,
 }
 
 export default MainTemplate

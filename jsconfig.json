@@ -3,5 +3,5 @@
         "baseUrl": "src",
         "noEmit": true
     },
-    "include": ["src"]
+    "include": ["src", "../webpack.common.js"]
 }

@@ -2,33 +2,11 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
 const ProvidePlugin = require('webpack/lib/ProvidePlugin')
 
 module.exports = {
     entry: './src/index.js',
     target: 'web',
-
-    output: {
-        path: path.join(__dirname, '/dist'),
-        filename: 'bundle.js',
-        publicPath: '/',
-    },
-
-    devServer: {
-        host: '0.0.0.0',
-        port: 3000,
-        https: false,
-
-        historyApiFallback: true,
-
-        proxy: {
-            '/api': {
-                target: 'http://localhost:5000',
-                secure: false,
-            },
-        },
-    },
 
     resolve: {
         extensions: ['.js', '.json'],
@@ -78,6 +56,9 @@ module.exports = {
                 use: [
                     {
                         loader: 'file-loader',
+                        options: {
+                            name: '/img/[contenthash].[ext]',
+                        },
                     },
                 ],
             },
@@ -92,13 +73,10 @@ module.exports = {
             },
         }),
         new MiniCssExtractPlugin(),
-        new ErrorOverlayPlugin(),
         new ProvidePlugin({
             React: 'react',
             PropTypes: 'prop-types',
             classnames: 'classnames',
         }),
     ],
-
-    devtool: 'cheap-module-source-map',
 }

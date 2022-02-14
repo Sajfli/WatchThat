@@ -257,7 +257,9 @@ const Watch = () => {
                     socket.emit('new video', _video)
                 }
             } catch (err) {
-                console.log(err)
+                const response = await err.response.json()
+
+                if (response.err) handleError({ err: response.err })
             }
         } else {
             console.log('invalid url')

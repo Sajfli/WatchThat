@@ -240,8 +240,6 @@ const Player = ({ video = {}, containerWidth, cbMoveControls }) => {
         title = video.title || null,
         indirect = video.indirect || false
 
-    // if it's a youtube player move contols under youtube iframe
-
     return (
         <div
             className={classnames(

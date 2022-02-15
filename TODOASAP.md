@@ -1,6 +1,6 @@
 # Things to do/fix ASAP
 
-* Rerender loop after sign out while in room
+* Fix rerender loop after sign out while in room
 * Fix strange bug with firefox (only in dev)
 * User join and leave feedback in chat
 * Users' video action feedback as popup on video

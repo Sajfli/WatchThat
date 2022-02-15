@@ -8,6 +8,15 @@ import useLocalisation from 'hooks/useLocalisation'
 import style from './Home.module.scss'
 
 import homePoster from 'res/img/posters/home.jpg'
+const homePosterAuthor = {
+    author: {
+        name: 'Atul Vinayak',
+        url: 'https://unsplash.com/@atulvi',
+    },
+    image: {
+        url: 'https://unsplash.com/photos/SqRd6V8tu0M',
+    },
+}
 
 const HomeTemplate = ({ buttons, children }) => {
     const l = useLocalisation()
@@ -15,7 +24,7 @@ const HomeTemplate = ({ buttons, children }) => {
     const btnProps = { width: '300px' }
 
     return (
-        <PosterBgWrapper src={homePoster} fullOnSmall>
+        <PosterBgWrapper src={homePoster} author={homePosterAuthor} fullOnSmall>
             <div className={style.content}>
                 <ViewHeader noTitleMargin>{l('hello')}</ViewHeader>
 

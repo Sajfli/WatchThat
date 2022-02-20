@@ -7,7 +7,11 @@ import Input from 'components/atoms/Input/Input'
 import useAuth from 'hooks/useAuth'
 import useSocket from 'hooks/useSocket'
 
+import getRandom from 'utils/getRandom'
+
 import style from './RoomChat.module.scss'
+import usePorter from 'hooks/usePorter'
+import useLocalisation from 'hooks/useLocalisation'
 
 const RoomChat = ({ username }) => {
     const [message, setMessage] = useState('')
@@ -22,12 +26,25 @@ const RoomChat = ({ username }) => {
     const mounted = useRef(false)
     const messagesEnd = useRef(null)
 
+    const l = useLocalisation()
+    const porter = usePorter()
+
     useEffect(() => {
         mounted.current = true
+
         return () => {
             mounted.current = false
         }
     }, [])
+
+    useEffect(() => {
+        porter.addFunction('chat_notify', notify)
+        console.log(messages)
+
+        return () => {
+            porter.removeFunction('chat_notify')
+        }
+    }, [messages])
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -46,13 +63,7 @@ const RoomChat = ({ username }) => {
         if (content.length < 1) return
 
         // generate message id
-        const randomBuffer = new Uint32Array(1)
-        window.crypto.getRandomValues(randomBuffer)
-
-        const msgId =
-            Date.now() +
-            `${randomBuffer[0]}` +
-            Math.random().toString(16).slice(2)
+        const msgId = getRandom()
 
         // create msg object
         const messageObject = {
@@ -78,7 +89,6 @@ const RoomChat = ({ username }) => {
 
         socket.on('message sent', (msgId) => {
             const _local = [...localMessages]
-            const _global = [...messages]
 
             const index = _local.findIndex(({ msgId: id }) => id === msgId)
 
@@ -88,10 +98,9 @@ const RoomChat = ({ username }) => {
             msg.local = false
 
             _local.splice(index, 1)
-            _global.push(msg)
 
             setLocalMessages(_local)
-            setMessages(_global)
+            setMessages([...messages, msg])
         })
 
         socket.on('message received', (msg) => {
@@ -105,10 +114,7 @@ const RoomChat = ({ username }) => {
 
             msg.content = msg.content.trim()
 
-            const _messages = [...messages]
-            _messages.push(msg)
-
-            setMessages(_messages)
+            setMessages([...messages, msg])
         })
 
         return () => {
@@ -123,11 +129,45 @@ const RoomChat = ({ username }) => {
         messagesEnd.current.scrollIntoView({ behavior: 'smooth' })
     }, [messages, localMessages])
 
+    // const addChatMessage = ()
+
+    const notify = (action, { ...params }) => {
+        const msg = {}
+        msg.msgId = getRandom(36)
+        msg.type = 'notify'
+
+        switch (action) {
+            case 'user_joined':
+                msg.notifyType = 'userJoined'
+                msg.notifyValue = params.username
+
+                break
+            case 'user_leaved':
+                msg.notifyType = 'userLeaved'
+                msg.notifyValue = params.username
+
+                break
+            default:
+                break
+        }
+
+        // TODO: fix race condition
+        // if (msg.notifyType) setMessages([...messages, msg])
+    }
+
     return (
         <div className={style.chat}>
             <div className={style.output}>
                 {[...messages, ...localMessages].map(
-                    ({ username, content, local, msgId }) => (
+                    ({
+                        username,
+                        content,
+                        local,
+                        msgId,
+                        type,
+                        notifyType,
+                        notifyValue,
+                    }) => (
                         <div
                             className={classnames(
                                 style.message,
@@ -135,8 +175,23 @@ const RoomChat = ({ username }) => {
                             )}
                             key={msgId}
                         >
-                            <span className={style.sender}>{username}:</span>
-                            <span className={style.content}>{content}</span>
+                            {type !== 'notify' ? (
+                                <>
+                                    <span className={style.sender}>
+                                        {username}:
+                                    </span>
+                                    <span className={style.content}>
+                                        {content}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className={style.notify}>
+                                    <span className={style.notifyValue}>
+                                        {notifyValue}&nbsp;
+                                    </span>
+                                    {l(notifyType)}
+                                </span>
+                            )}
                         </div>
                     )
                 )}

@@ -14,6 +14,7 @@ import useModal from 'hooks/useModal'
 import useAuthModal from 'hooks/useAuthModal'
 import useError from 'hooks/useError'
 import useAuth from 'hooks/useAuth'
+import usePorter from 'hooks/usePorter'
 
 // UI components
 import TextInput from 'components/atoms/Input/Input'
@@ -52,6 +53,8 @@ const Watch = () => {
         [moveControls, setMoveControls] = useState(false)
 
     const [socket, socketUserId, initSocket] = useSocket()
+
+    const porter = usePorter()
 
     const username = auth.user
         ? auth.user.username
@@ -137,13 +140,16 @@ const Watch = () => {
             _members.push(params)
 
             setMembers(_members)
+
+            if (porter.verifyFunction('chat_notify'))
+                porter.func('chat_notify')('user_joined', {
+                    username: params.username,
+                })
         })
 
         socket.on('user_leaved', (params) => {
             if (!members || !Array.isArray(members) || members.length < 1)
                 return
-
-            console.log(`${params.socketId} leaved from the room`, params)
 
             const userIndex = members.findIndex(({ socketId, _id }) => {
                 if (params.socketId === socketId) return true
@@ -151,13 +157,16 @@ const Watch = () => {
                 return false
             })
 
-            console.log('userIndex', userIndex, members)
-
             if (userIndex >= 0) {
                 const _members = [...members]
                 _members.splice(userIndex, 1)
                 setMembers(_members)
             }
+
+            if (porter.verifyFunction('chat_notify'))
+                porter.func('chat_notify')('user_leaved', {
+                    username: params.username || 'foo',
+                })
         })
 
         socket.on('set_members_list', (params) => {

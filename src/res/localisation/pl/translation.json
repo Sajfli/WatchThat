@@ -23,6 +23,9 @@
     "joinExistingRoom": "Używając linka od znajomego możesz dołączyć do istniejącego pokoju.",
     "invalidRoom": "Ten pokój nie istnieje",
 
+    "userJoined": "dołączył do pokoju",
+    "userLeaved": "wyszedł z pokoju",
+
     "unspecifiedError": "Wystąpił nieokreślony błąd",
     "http5xxError": "Wewnętrzny błąd serwera",
     "databaseError": "Wystąpił błąd bazy danych",

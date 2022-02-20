@@ -7,51 +7,44 @@ import pl from 'res/localisation/pl/translation.json'
 const LocalisationContext = createContext({})
 
 const LocalisationProvider = ({ children }) => {
+    const [lang, setLang] = useState('en')
 
-    const [ lang, setLang ] = useState('en')
-
-    const langList = [ 'en', 'pl' ]
+    const langList = ['en', 'pl']
 
     const getLang = () => {
         const fromStorage = localStorage.getItem('language')
         let _lang = fromStorage
 
-        if(!_lang) {
+        if (!_lang) {
             try {
                 let browserLang = navigator.language.split('-')[0]
 
-                if(browserLang)
-                    _lang = browserLang
+                if (browserLang) _lang = browserLang
                 else throw Error()
-            } catch(err) {
+            } catch (err) {
                 _lang = langList[0]
             }
         }
 
         _lang = _lang.toLowerCase()
 
-        if(!langList.includes(_lang))
-            _lang = langList[0]
+        if (!langList.includes(_lang)) _lang = langList[0]
 
         return _lang
     }
 
-    const changeLang = _lang => {
-
-        if(!lang) return false
+    const changeLang = (_lang) => {
+        if (!lang) return false
 
         _lang = _lang.toLowerCase()
-        if(langList.includes(_lang)) {
+        if (langList.includes(_lang)) {
             localStorage.setItem('language', lang)
             return true
         } else return false
-
-
     }
 
-    const change = _lang => {
-        if(changeLang(_lang))
-            setLang(_lang)
+    const change = (_lang) => {
+        if (changeLang(_lang)) setLang(_lang)
     }
 
     useEffect(() => {
@@ -60,20 +53,22 @@ const LocalisationProvider = ({ children }) => {
         // eslint-disable-next-line
     }, [])
 
-    return(
-        <LocalisationContext.Provider value={{lang, change}}>
+    return (
+        <LocalisationContext.Provider value={{ lang, change }}>
             {children}
         </LocalisationContext.Provider>
     )
+}
 
+LocalisationProvider.propTypes = {
+    children: PropTypes.node.isRequired,
 }
 
 const useLocalisation = () => {
-
     const loc = useContext(LocalisationContext)
     let translation
 
-    switch(loc.lang) {
+    switch (loc.lang) {
         case 'pl':
             translation = pl
             break
@@ -83,21 +78,18 @@ const useLocalisation = () => {
     }
 
     return (value) => {
-
         let string
 
         try {
             string = translation[value]
-            if(!string) throw Error()
-        } catch(err) {
+            if (!string) throw Error()
+        } catch (err) {
             string = 'null'
         }
 
         return string
     }
-
 }
-
 
 export { LocalisationProvider }
 export default useLocalisation

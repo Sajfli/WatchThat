@@ -55,6 +55,14 @@ $btn-size: 35px;
         overflow-wrap: break-word;
     }
 
+    & > .notify {
+        color: #facdfc;
+
+        & > .notifyValue {
+            font-weight: 700;
+        }
+    }
+
     &:hover {
         background-color: rgba(255, 255, 255, 0.01);
     }

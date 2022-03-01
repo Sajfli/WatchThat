@@ -1,7 +1,7 @@
-@import 'utils/master';
+@import '@/utils/master';
 
 $popup_height: 600;
-$appear_duration: .4s;
+$appear_duration: 0.4s;
 
 @keyframes eclipseAppear {
     0% {
@@ -9,24 +9,24 @@ $appear_duration: .4s;
     }
 
     100% {
-        background-color: rgba(0, 0, 0, .7);
+        background-color: rgba(0, 0, 0, 0.7);
     }
 }
 
 .eclipse {
     position: absolute;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100vh;
 
-    background-color: rgba(0, 0, 0, .7);
+    background-color: rgba(0, 0, 0, 0.7);
 
     overflow: hidden;
 
     z-index: 101;
 
     animation: eclipseAppear $appear_duration forwards linear;
-
 }
 
 @keyframes appear {
@@ -41,7 +41,7 @@ $appear_duration: .4s;
 
 .modal {
     position: absolute;
-    width: #{$popup_height * .618}px;
+    width: #{$popup_height * 0.618}px;
     height: max-content;
 
     background-color: $shade-color;

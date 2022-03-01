@@ -1,12 +1,10 @@
-@import 'utils/master';
-
+@import '@/utils/master';
 
 .title {
     font-size: 20px;
 }
 
 .textInputs {
-
     margin: 30px 0 20px;
 
     .spacer {
@@ -16,7 +14,6 @@
     .text {
         margin-left: 2px;
     }
-
 }
 
 .bottom {
@@ -33,10 +30,10 @@
 
     cursor: pointer;
 
-    transition: color .2s linear;
+    transition: color 0.2s linear;
 
     &:hover {
-        color: rgba($accent-color, .6);
+        color: rgba($accent-color, 0.6);
     }
 }
 

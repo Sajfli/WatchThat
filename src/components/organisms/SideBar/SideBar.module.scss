@@ -1,6 +1,6 @@
-@import 'utils/master';
-@import 'utils/mixins';
-@import 'utils/media';
+@import '@/utils/master';
+@import '@/utils/mixins';
+@import '@/utils/media';
 
 $btn-size: $sidebar-width - 20px;
 $btn-border-radius: 10px;

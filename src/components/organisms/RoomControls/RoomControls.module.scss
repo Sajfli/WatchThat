@@ -1,6 +1,6 @@
-@import 'utils/master';
-@import 'utils/media';
-@import 'utils/mixins';
+@import '@/utils/master';
+@import '@/utils/media';
+@import '@/utils/mixins';
 
 .roomControls {
     position: absolute;

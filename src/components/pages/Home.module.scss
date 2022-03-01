@@ -1,4 +1,4 @@
-@import 'utils/media';
+@import '@/utils/media';
 
 .centerButtons {
     @include media(sm, xs) {

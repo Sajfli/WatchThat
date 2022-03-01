@@ -10,3 +10,4 @@
 * Improve modals on mobiles
 * Fix topbar issue on mobiles (?)
 * !!! REDIRECT WWW TO NON-WWW
+* Fix photo link in mobile view
